@@ -9,6 +9,9 @@ import { UserViewModel } from './view-models/user-view-model';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * Busca os dados de um usuário pelo id
+   */
   @Get(':id')
   async getById(
     @Param('id', new ParseUUIDPipe()) userId: string,
