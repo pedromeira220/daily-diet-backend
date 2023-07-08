@@ -27,4 +27,12 @@ export class InMemoryMealsRepository implements MealsRepository {
 
     this.meals.splice(mealIndex, 1);
   }
+
+  async save(meal: Meal): Promise<void> {
+    const mealIndex = this.meals.findIndex(
+      (meal) => meal.id.toString() == meal.id.toString(),
+    );
+
+    this.meals[mealIndex] = meal;
+  }
 }

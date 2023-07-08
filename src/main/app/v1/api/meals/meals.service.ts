@@ -53,4 +53,23 @@ export class MealsService {
 
     await this.mealsRepository.deleteById(mealId);
   }
+
+  async updateById(mealId: string, updatedMeal: Meal): Promise<Meal> {
+    // TODO: uma refeição só pode ser atualizada pelo usuário a qual a criou
+
+    const mealFound = await this.mealsRepository.getById(mealId);
+
+    if (!mealFound) {
+      throw new NotFoundException('Refeição não encontrada');
+    }
+
+    mealFound.name = updatedMeal.name;
+    mealFound.description = updatedMeal.description;
+    mealFound.mealDate = updatedMeal.mealDate;
+    mealFound.isOnDiet = updatedMeal.isOnDiet;
+
+    await this.mealsRepository.save(mealFound);
+
+    return mealFound;
+  }
 }

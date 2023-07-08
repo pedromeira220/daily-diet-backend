@@ -4,4 +4,5 @@ export abstract class MealsRepository {
   abstract create(meal: Meal): Promise<void>;
   abstract getById(mealId: string): Promise<Meal | null>;
   abstract deleteById(mealId: string): Promise<void>;
+  abstract save(meal: Meal): Promise<void>;
 }

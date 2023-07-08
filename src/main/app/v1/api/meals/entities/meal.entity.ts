@@ -15,17 +15,41 @@ export class Meal extends Entity<MealProps> {
   get name() {
     return this.props.name;
   }
+  set name(value: string) {
+    this.props.name = value;
+    this.touch();
+  }
+
   get description() {
     return this.props.description;
   }
+  set description(value: string) {
+    this.props.description = value;
+    this.touch();
+  }
+
   get createdAt() {
     return this.props.createdAt;
   }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
   get isOnDiet() {
     return this.props.isOnDiet;
   }
+  set isOnDiet(value: boolean) {
+    this.props.isOnDiet = value;
+    this.touch();
+  }
+
   get mealDate() {
     return this.props.mealDate;
+  }
+  set mealDate(value: Date) {
+    this.props.mealDate = value;
+    this.touch();
   }
 
   private touch() {

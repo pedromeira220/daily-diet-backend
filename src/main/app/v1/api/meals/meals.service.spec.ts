@@ -60,4 +60,24 @@ describe('MealsService', () => {
 
     expect(repository.meals.length).toBe(0);
   });
+
+  it('should be able to update a meal', async () => {
+    const previousCreatedMeal = makeMeal();
+
+    repository.meals.push(previousCreatedMeal);
+
+    const updatedMeal = previousCreatedMeal;
+
+    updatedMeal.name = 'Another meal';
+    updatedMeal.description = 'A description test';
+
+    await service.updateById(updatedMeal.id.toString(), updatedMeal);
+
+    const mealFromRepository = repository.meals.find(
+      (meal) => meal.id.toString() == updatedMeal.id.toString(),
+    );
+
+    expect(mealFromRepository?.name).toBe('Another meal');
+    expect(mealFromRepository?.description).toBe('A description test');
+  });
 });
