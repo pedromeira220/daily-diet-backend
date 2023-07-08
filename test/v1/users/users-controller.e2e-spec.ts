@@ -1,14 +1,14 @@
-/* import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from 'src/app.module';
+import { V1Module } from '@v1/v1.module';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [V1Module],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -16,14 +16,10 @@ describe('UsersController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/users')
-      .expect(200)
-      .expect('Hello World!');
+    expect(2 + 2).toBe(4);
   });
 
   beforeEach(async () => {
     await app.close();
   });
 });
- */

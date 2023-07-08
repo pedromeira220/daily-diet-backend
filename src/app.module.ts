@@ -1,22 +1,9 @@
-import { Module, ValidationPipe } from '@nestjs/common';
-import { UsersModule } from './main/app/v1/api/users/users.module';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
-import { AuthModule } from '@v1/api/auth/auth.module';
-
-import { AllExceptionFilter } from '@v1/common/filters/all-exception.filter';
+import { Module } from '@nestjs/common';
+import { V1Module } from '@v1/v1.module';
 
 @Module({
-  imports: [UsersModule, AuthModule],
+  imports: [V1Module],
   controllers: [],
-  providers: [
-    {
-      provide: APP_PIPE,
-      useClass: ValidationPipe,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: AllExceptionFilter,
-    },
-  ],
+  providers: [],
 })
 export class AppModule {}
