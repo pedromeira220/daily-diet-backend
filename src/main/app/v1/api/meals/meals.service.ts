@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Meal } from './entities/meal.entity';
 import { MealsRepository } from './repository/meals-repository';
 
@@ -29,5 +29,28 @@ export class MealsService {
     await this.mealsRepository.create(meal);
 
     return meal;
+  }
+
+  async getById(mealId: string): Promise<Meal> {
+    // TODO: uma refeição só pode ser visualizada pelo usuário que a criou
+    const mealFound = await this.mealsRepository.getById(mealId);
+
+    if (!mealFound) {
+      throw new NotFoundException('Refeição não encontrada');
+    }
+
+    return mealFound;
+  }
+
+  async deleteById(mealId: string): Promise<void> {
+    // TODO: uma refeição só pode ser deletada pelo usuário a qual a criou
+
+    const mealFound = await this.mealsRepository.getById(mealId);
+
+    if (!mealFound) {
+      throw new NotFoundException('Refeição não encontrada');
+    }
+
+    await this.mealsRepository.deleteById(mealId);
   }
 }

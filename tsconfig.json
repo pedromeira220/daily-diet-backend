@@ -18,7 +18,8 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@v1/*": ["./src/main/app/v1/*"]
+      "@v1/*": ["./src/main/app/v1/*"],
+      "@test/*": ["./test/*"]
     },
     "moduleResolution": "node"
   }

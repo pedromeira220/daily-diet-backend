@@ -1,8 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
+// import { Test, TestingModule } from '@nestjs/testing';
 import { MealsService } from './meals.service';
 import { InMemoryMealsRepository } from './repository/implementations/in-memory-meals-repository';
-import { makeMeal } from 'test/factories/make-meal';
 import { Meal } from './entities/meal.entity';
+import { makeMeal } from '@test/factories/make-meal';
+import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
+import { NotFoundException } from '@nestjs/common';
 
 describe('MealsService', () => {
   let service: MealsService;
@@ -32,5 +34,31 @@ describe('MealsService', () => {
     expect(createdMeal).toBeDefined();
     expect(createdMeal).toBeInstanceOf(Meal);
     expect(typeof createdMeal.id.toString()).toBe('string');
+  });
+
+  it('should be able to get an meal by id', async () => {
+    const previousCreatedMeal = makeMeal();
+
+    repository.meals.push(previousCreatedMeal);
+
+    const mealFound = await service.getById(previousCreatedMeal.id.toString());
+
+    expect(mealFound.id.toString()).toBe(previousCreatedMeal.id.toString());
+  });
+
+  it('should not be able to get an meal by id that does not exits', async () => {
+    expect(async () => {
+      await service.getById('fake-id');
+    }).rejects.toThrowError(NotFoundException);
+  });
+
+  it('should be able to delete a meal', async () => {
+    const previousCreatedMeal = makeMeal();
+
+    repository.meals.push(previousCreatedMeal);
+
+    await service.deleteById(previousCreatedMeal.id.toString());
+
+    expect(repository.meals.length).toBe(0);
   });
 });
