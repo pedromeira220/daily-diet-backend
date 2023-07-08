@@ -1,10 +1,10 @@
 import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
-import { UserDTO } from './dtos/user.dto';
-import { UserViewModel } from './view-models/user-view-model';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
+import { UserDTO } from './dtos/user.dto';
+import { UsersService } from './users.service';
+import { UserViewModel } from './view-models/user-view-model';
 
 @ApiTags('users')
 @Controller('users')

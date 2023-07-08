@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { MealsRepository } from '../meals-repository';
 import { Meal } from '../../entities/meal.entity';
+import { MealsRepository } from '../meals-repository';
 
 @Injectable()
 export class InMemoryMealsRepository implements MealsRepository {

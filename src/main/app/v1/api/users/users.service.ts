@@ -1,10 +1,5 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from './repositories/users-repository';
-import { User } from './entities/user.entity';
 
 interface CreateRequest {
   name: string;

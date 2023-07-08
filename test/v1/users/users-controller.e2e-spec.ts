@@ -1,6 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import { Test, TestingModule } from '@nestjs/testing';
 import { V1Module } from '@v1/v1.module';
 
 describe('UsersController (e2e)', () => {

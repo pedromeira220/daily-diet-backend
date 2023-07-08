@@ -1,5 +1,5 @@
-import { Meal, MealProps } from '@v1/api/meals/entities/meal.entity';
 import { faker } from '@faker-js/faker';
+import { Meal, MealProps } from '@v1/api/meals/entities/meal.entity';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 
 export function makeMeal(

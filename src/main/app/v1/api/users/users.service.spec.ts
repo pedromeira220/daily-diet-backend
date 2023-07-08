@@ -1,10 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
-import { InMemoryUsersRepository } from './repositories/implementations/in-memory/in-memory-users-repository';
+import { NotFoundException } from '@nestjs/common';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { User } from './entities/user.entity';
-import { NotFoundException } from '@nestjs/common';
-import { UsersRepository } from './repositories/users-repository';
+import { InMemoryUsersRepository } from './repositories/implementations/in-memory/in-memory-users-repository';
+import { UsersService } from './users.service';
 // import { UsersRepository } from './repositories/users-repository';
 
 describe('UsersService', () => {

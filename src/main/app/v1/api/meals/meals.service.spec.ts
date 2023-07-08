@@ -1,10 +1,9 @@
 // import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
+import { makeMeal } from '@test/factories/make-meal';
+import { Meal } from './entities/meal.entity';
 import { MealsService } from './meals.service';
 import { InMemoryMealsRepository } from './repository/implementations/in-memory-meals-repository';
-import { Meal } from './entities/meal.entity';
-import { makeMeal } from '@test/factories/make-meal';
-import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
-import { NotFoundException } from '@nestjs/common';
 
 describe('MealsService', () => {
   let service: MealsService;

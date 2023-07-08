@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
-import { UsersRepository } from './repositories/users-repository';
 import { InMemoryUsersRepository } from './repositories/implementations/in-memory/in-memory-users-repository';
+import { UsersRepository } from './repositories/users-repository';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
 
 @Module({
   controllers: [UsersController],

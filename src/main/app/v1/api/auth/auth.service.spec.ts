@@ -1,12 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { UsersRepository } from '../users/repositories/users-repository';
-import { InMemoryUsersRepository } from '../users/repositories/implementations/in-memory/in-memory-users-repository';
+import { BadRequestException } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { InMemoryUsersRepository } from '../users/repositories/implementations/in-memory/in-memory-users-repository';
+import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let repository: InMemoryUsersRepository;
