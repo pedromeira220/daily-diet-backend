@@ -41,6 +41,8 @@ export class AllExceptionFilter implements ExceptionFilter {
       }
     }
 
+    console.log(exception);
+
     return response.status(status).json(
       new ResponseDTO({
         success: false,
