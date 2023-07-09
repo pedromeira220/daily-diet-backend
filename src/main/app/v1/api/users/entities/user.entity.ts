@@ -1,7 +1,7 @@
 import { Entity } from '@v1/common/entities/entity.entity';
 import { Optional } from '@v1/common/logic/optional';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
-import { compareSync, hashSync } from 'bcrypt';
+import { compareSync, hashSync } from 'bcryptjs';
 
 interface UserProps {
   name: string;
