@@ -6,9 +6,10 @@ import { AllExceptionFilter } from '@v1/common/filters/all-exception.filter';
 
 import { MealsModule } from './api/meals/meals.module';
 import { UsersModule } from './api/users/users.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, MealsModule],
+  imports: [UsersModule, AuthModule, MealsModule, DatabaseModule],
   controllers: [],
   providers: [
     {

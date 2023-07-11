@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { InMemoryUsersRepository } from '../users/repositories/implementations/in-memory/in-memory-users-repository';
+import { PrismaUsersRepository } from '../users/repositories/implementations/prisma/prisma-users-repository';
 import { UsersRepository } from '../users/repositories/users-repository';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
     AuthService,
     {
       provide: UsersRepository,
-      useClass: InMemoryUsersRepository,
+      useClass: PrismaUsersRepository,
     },
   ],
 })

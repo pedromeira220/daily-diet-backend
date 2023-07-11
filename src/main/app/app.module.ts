@@ -10,6 +10,7 @@ import { validate } from './core/config/env.validation';
     ConfigModule.forRoot({
       isGlobal: true,
       validate: validate,
+      expandVariables: true,
     }),
     AppConfigModule,
   ],

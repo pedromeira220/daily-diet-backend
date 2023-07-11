@@ -3,8 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
 import { UserDTO } from './dtos/user.dto';
+import { UserMapper } from './mappers/user.mapper';
 import { UsersService } from './users.service';
-import { UserViewModel } from './view-models/user-view-model';
 
 @ApiTags('users')
 @Controller('users')
@@ -21,6 +21,6 @@ export class UsersController {
   ): Promise<ResponseDTO<UserDTO>> {
     const userFound = await this.usersService.getById(userId);
 
-    return UserViewModel.toHttp(userFound);
+    return UserMapper.toHttp(userFound);
   }
 }
