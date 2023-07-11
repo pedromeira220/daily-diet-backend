@@ -8,6 +8,7 @@
   },
   "moduleNameMapper": {
     "^@v1/(.*)$": "<rootDir>/../src/main/app/v1/$1",
-    "^@test/(.*)$": "<rootDir>/../test/$1"
+    "^@test/(.*)$": "<rootDir>/../test/$1",
+    "^@core/(.*)$": "<rootDir>/main/app/core/$1"
   }
 }

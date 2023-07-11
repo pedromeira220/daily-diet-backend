@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@v1/*": ["./src/main/app/v1/*"],
-      "@test/*": ["./test/*"]
+      "@test/*": ["./test/*"],
+      "@core/*": ["./src/main/app/core/*"]
     },
     "moduleResolution": "node"
   }
