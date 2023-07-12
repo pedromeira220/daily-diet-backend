@@ -32,6 +32,49 @@ describe('AuthController (e2e)', () => {
     );
   });
 
+  it('/auth/login (POST)', async () => {
+    const email = 'john@email.com';
+    const password = '12345';
+
+    await request(app.getHttpServer()).post('/auth/register').send({
+      name: 'John Doe',
+      email,
+      password,
+    });
+
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email,
+        password,
+      });
+
+    expect(response.status).toBe(200);
+
+    // TODO: validar se esta retornando o token
+  });
+
+  it('/auth/login (fail with invalid password) (POST)', async () => {
+    const email = 'john@email.com';
+    const password = '12345';
+
+    await request(app.getHttpServer()).post('/auth/register').send({
+      name: 'John Doe',
+      email,
+      password,
+    });
+
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email,
+        password: 'invalid-password',
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body.errors.length).toBeTruthy();
+  });
+
   beforeEach(async () => {
     await app.close();
   });
