@@ -1,12 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from './repositories/users-repository';
 
-interface CreateRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-
 @Injectable()
 export class UsersService {
   constructor(private readonly userRepository: UsersRepository) {}

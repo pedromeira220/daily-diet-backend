@@ -2,6 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
 import { InMemoryUsersRepository } from '../users/repositories/implementations/in-memory/in-memory-users-repository';
 import { AuthService } from './auth.service';
+import { InvalidPasswordOrEmailError } from './errors/invalid-password-or-email.error';
 
 describe('AuthService', () => {
   let repository: InMemoryUsersRepository;
@@ -56,5 +57,56 @@ describe('AuthService', () => {
         password: '12345',
       });
     }).rejects.toThrowError(BadRequestException);
+  });
+
+  it('should validate user for login with correct password and email', async () => {
+    const password = '12345';
+    const email = 'john@example.com';
+
+    const registeredUser = await service.registerUser({
+      email,
+      name: 'John doe',
+      password,
+    });
+
+    const user = await service.validateUserForLogin({ email, password });
+
+    expect(user.id.toString()).toBe(registeredUser.id.toString());
+  });
+
+  it('should not validate user for login with incorrect password', async () => {
+    const password = '12345';
+    const email = 'john@example.com';
+
+    await service.registerUser({
+      email,
+      name: 'John doe',
+      password,
+    });
+
+    expect(async () => {
+      await service.validateUserForLogin({
+        email,
+        password: 'incorrect-passsword',
+      });
+    }).rejects.toThrowError(InvalidPasswordOrEmailError);
+  });
+
+  it('should not validate user for login with incorrect email', async () => {
+    const password = '12345';
+    const email = 'john@example.com';
+
+    await service.registerUser({
+      email,
+      name: 'John doe',
+      password,
+    });
+
+    expect(async () => {
+      await service.validateUserForLogin({
+        email: 'incorrect-email@example.com',
+        password,
+      });
+    }).rejects.toThrowError(InvalidPasswordOrEmailError);
   });
 });
