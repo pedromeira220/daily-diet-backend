@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
@@ -15,7 +8,9 @@ import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { RegisterRequestDTO } from './dtos/register-request.dto';
+import { TokenResponseDTO } from './dtos/token-response.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { TokenResponseMapper } from './mappers/token-response.mapper';
 import { AuthUser } from './models/auth-user.model';
 
 @ApiTags('auth')
@@ -44,10 +39,12 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  @HttpCode(HttpStatus.OK)
-  async login(@CurrentUser() currentUser: AuthUser) {
+  @ApiResponseDTO(TokenResponseDTO)
+  async login(
+    @CurrentUser() currentUser: AuthUser,
+  ): Promise<ResponseDTO<TokenResponseDTO>> {
     const { access_token } = await this.authService.login(currentUser);
 
-    return { access_token };
+    return TokenResponseMapper.toHttp(access_token);
   }
 }
