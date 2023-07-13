@@ -25,7 +25,7 @@ model Meal {
   id          String    @id
   name        String
   description String
-  in_on_diet  Boolean
+  is_on_diet  Boolean
   meal_date   DateTime
   created_at  DateTime
   updated_at  DateTime?

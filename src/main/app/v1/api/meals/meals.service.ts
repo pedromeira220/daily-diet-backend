@@ -110,4 +110,19 @@ export class MealsService {
 
     return mealsCount;
   }
+
+  async getMealsCountThatAreOnDiet(userId: string) {
+    const mealsCount = await this.mealsRepository.countAllThatAreOnDietByUserId(
+      userId,
+    );
+
+    return mealsCount;
+  }
+
+  async getMealsCountThatAreNotOnDiet(userId: string) {
+    const mealsCount =
+      await this.mealsRepository.countAllThatAreNotOnDietByUserId(userId);
+
+    return mealsCount;
+  }
 }

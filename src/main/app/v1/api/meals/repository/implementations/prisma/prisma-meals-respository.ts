@@ -51,4 +51,26 @@ export class PrismaMealsRepository implements MealsRepository {
 
     return mealsCount;
   }
+
+  async countAllThatAreOnDietByUserId(userId: string): Promise<number> {
+    const mealsCount = await this.prisma.meal.count({
+      where: {
+        user_id: userId,
+        is_on_diet: true,
+      },
+    });
+
+    return mealsCount;
+  }
+
+  async countAllThatAreNotOnDietByUserId(userId: string): Promise<number> {
+    const mealsCount = await this.prisma.meal.count({
+      where: {
+        user_id: userId,
+        is_on_diet: false,
+      },
+    });
+
+    return mealsCount;
+  }
 }

@@ -6,11 +6,13 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { NumberDTO } from '@v1/common/dtos/number.dto';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
@@ -86,13 +88,31 @@ export class MealsController {
 
     return MealMapper.toHttp(updatedMealFromService);
   }
-
+  @ApiQuery({ type: Boolean, required: false })
   @Get('/metrics/meals-count')
   @ApiResponseDTO(NumberDTO)
   async getMealsCountByUserMetric(
     @CurrentUser() currentUser: AuthUser,
+    @Query('isOnDiet', new ParseBoolPipe({ optional: true }))
+    isOnDiet: boolean | undefined,
   ): Promise<ResponseDTO<NumberDTO>> {
-    const mealsCount = await this.mealsService.getMealsCountByUser(
+    if (typeof isOnDiet == 'undefined') {
+      const mealsCount = await this.mealsService.getMealsCountByUser(
+        currentUser.userId,
+      );
+
+      return ResponseDTOMapper.fromNumber(mealsCount);
+    }
+
+    if (isOnDiet) {
+      const mealsCount = await this.mealsService.getMealsCountThatAreOnDiet(
+        currentUser.userId,
+      );
+
+      return ResponseDTOMapper.fromNumber(mealsCount);
+    }
+
+    const mealsCount = await this.mealsService.getMealsCountThatAreNotOnDiet(
       currentUser.userId,
     );
 

@@ -135,6 +135,68 @@ describe('MealsController (e2e)', () => {
     expect(response.body.data.value).toBe(MEALS_COUNT);
   });
 
+  it('should count meals from user that are on diet', async () => {
+    const { accessToken, previousCreatedUser } =
+      await createAndAuthenticateUser(app, prisma);
+
+    const MEALS_COUNT_THAT_ARE_ON_DIET = 10;
+    const MEALS_COUNT_THAT_ARE_NOT_ON_DIET = 7;
+
+    for (let i = 0; i < MEALS_COUNT_THAT_ARE_ON_DIET; i++) {
+      await prisma.meal.create({
+        data: MealMapper.toPrisma(
+          makeMeal({ userId: previousCreatedUser.id, isOnDiet: true }),
+        ),
+      });
+    }
+
+    for (let i = 0; i < MEALS_COUNT_THAT_ARE_NOT_ON_DIET; i++) {
+      await prisma.meal.create({
+        data: MealMapper.toPrisma(
+          makeMeal({ userId: previousCreatedUser.id, isOnDiet: false }),
+        ),
+      });
+    }
+
+    const response = await request(app.getHttpServer())
+      .get('/meals/metrics/meals-count')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .query({ isOnDiet: true });
+
+    expect(response.body.data.value).toBe(MEALS_COUNT_THAT_ARE_ON_DIET);
+  });
+
+  it('should count meals from user that are not on diet', async () => {
+    const { accessToken, previousCreatedUser } =
+      await createAndAuthenticateUser(app, prisma);
+
+    const MEALS_COUNT_THAT_ARE_ON_DIET = 10;
+    const MEALS_COUNT_THAT_ARE_NOT_ON_DIET = 7;
+
+    for (let i = 0; i < MEALS_COUNT_THAT_ARE_ON_DIET; i++) {
+      await prisma.meal.create({
+        data: MealMapper.toPrisma(
+          makeMeal({ userId: previousCreatedUser.id, isOnDiet: true }),
+        ),
+      });
+    }
+
+    for (let i = 0; i < MEALS_COUNT_THAT_ARE_NOT_ON_DIET; i++) {
+      await prisma.meal.create({
+        data: MealMapper.toPrisma(
+          makeMeal({ userId: previousCreatedUser.id, isOnDiet: false }),
+        ),
+      });
+    }
+
+    const response = await request(app.getHttpServer())
+      .get('/meals/metrics/meals-count')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .query({ isOnDiet: false });
+
+    expect(response.body.data.value).toBe(MEALS_COUNT_THAT_ARE_NOT_ON_DIET);
+  });
+
   beforeEach(async () => {
     await app.close();
   });

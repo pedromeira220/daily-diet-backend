@@ -160,4 +160,64 @@ describe('MealsService', () => {
 
     expect(mealsCountFromService).toBe(MEALS_COUNT);
   });
+
+  it('should count meals from user that are on diet', async () => {
+    const MEALS_COUNT_THAT_ARE_ON_DIET = 10;
+    const MEALS_COUNT_THAT_ARE_NOT_ON_DIET = 7;
+    const userId = 'user-id';
+
+    for (let i = 0; i < MEALS_COUNT_THAT_ARE_ON_DIET; i++) {
+      repository.meals.push(
+        makeMeal({
+          userId: new UniqueEntityId(userId),
+          isOnDiet: true,
+        }),
+      );
+    }
+
+    for (let i = 0; i < MEALS_COUNT_THAT_ARE_NOT_ON_DIET; i++) {
+      repository.meals.push(
+        makeMeal({
+          userId: new UniqueEntityId(userId),
+          isOnDiet: false,
+        }),
+      );
+    }
+
+    const mealsCountFromService = await service.getMealsCountThatAreOnDiet(
+      userId,
+    );
+
+    expect(mealsCountFromService).toBe(MEALS_COUNT_THAT_ARE_ON_DIET);
+  });
+
+  it('should count meals from user that are not on diet', async () => {
+    const MEALS_COUNT_THAT_ARE_ON_DIET = 10;
+    const MEALS_COUNT_THAT_ARE_NOT_ON_DIET = 7;
+    const userId = 'user-id';
+
+    for (let i = 0; i < MEALS_COUNT_THAT_ARE_ON_DIET; i++) {
+      repository.meals.push(
+        makeMeal({
+          userId: new UniqueEntityId(userId),
+          isOnDiet: true,
+        }),
+      );
+    }
+
+    for (let i = 0; i < MEALS_COUNT_THAT_ARE_NOT_ON_DIET; i++) {
+      repository.meals.push(
+        makeMeal({
+          userId: new UniqueEntityId(userId),
+          isOnDiet: false,
+        }),
+      );
+    }
+
+    const mealsCountFromService = await service.getMealsCountThatAreNotOnDiet(
+      userId,
+    );
+
+    expect(mealsCountFromService).toBe(MEALS_COUNT_THAT_ARE_NOT_ON_DIET);
+  });
 });

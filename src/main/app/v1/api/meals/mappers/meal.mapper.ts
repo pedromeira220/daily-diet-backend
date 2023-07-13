@@ -10,7 +10,7 @@ export class MealMapper {
     return Meal.create(
       {
         description: raw.description,
-        isOnDiet: raw.in_on_diet,
+        isOnDiet: raw.is_on_diet,
         mealDate: raw.meal_date,
         name: raw.name,
         userId: new UniqueEntityId(raw.user_id),
@@ -26,7 +26,7 @@ export class MealMapper {
       created_at: meal.createdAt,
       description: meal.description,
       id: meal.id.toString(),
-      in_on_diet: meal.isOnDiet,
+      is_on_diet: meal.isOnDiet,
       meal_date: meal.mealDate,
       name: meal.name,
       updated_at: meal.updatedAt ?? null,

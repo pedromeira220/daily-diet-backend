@@ -40,4 +40,16 @@ export class InMemoryMealsRepository implements MealsRepository {
     return this.meals.filter((meal) => meal.userId.toString() === userId)
       .length;
   }
+
+  async countAllThatAreOnDietByUserId(userId: string): Promise<number> {
+    return this.meals.filter(
+      (meal) => meal.userId.toString() === userId && meal.isOnDiet === true,
+    ).length;
+  }
+
+  async countAllThatAreNotOnDietByUserId(userId: string): Promise<number> {
+    return this.meals.filter(
+      (meal) => meal.userId.toString() === userId && meal.isOnDiet === false,
+    ).length;
+  }
 }

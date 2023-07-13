@@ -6,4 +6,6 @@ export abstract class MealsRepository {
   abstract deleteById(mealId: string): Promise<void>;
   abstract save(meal: Meal): Promise<void>;
   abstract countByUserId(userId: string): Promise<number>;
+  abstract countAllThatAreOnDietByUserId(userId: string): Promise<number>;
+  abstract countAllThatAreNotOnDietByUserId(userId: string): Promise<number>;
 }
