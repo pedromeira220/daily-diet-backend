@@ -55,12 +55,26 @@ describe('MealsController (e2e)', () => {
       .get(`/meals/${previousCreatedMealId}`)
       .set('Authorization', `Bearer ${accessToken}`);
 
-    console.log('> response.body', response.body);
-    console.log('> previousCreatedMeal', previousCreatedMeal);
-    console.log('> previousCreatedMealId', previousCreatedMealId);
-
     expect(response.status).toBe(200);
     expect(response.body.data.id).toBe(previousCreatedMealId);
+  });
+
+  it('/meals/{id} (DELETE)', async () => {
+    const { accessToken, previousCreatedUser } =
+      await createAndAuthenticateUser(app, prisma);
+
+    const previousCreatedMeal = makeMeal({ userId: previousCreatedUser.id });
+    const previousCreatedMealId = previousCreatedMeal.id.toString();
+
+    await prisma.meal.create({
+      data: MealMapper.toPrisma(previousCreatedMeal),
+    });
+
+    const response = await request(app.getHttpServer())
+      .delete(`/meals/${previousCreatedMealId}`)
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(response.status).toBe(204);
   });
 
   beforeEach(async () => {

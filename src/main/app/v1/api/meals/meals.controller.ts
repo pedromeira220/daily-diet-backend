@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -50,5 +53,14 @@ export class MealsController {
     const meal = await this.mealsService.getById(id, currentUser.userId);
 
     return MealMapper.toHttp(meal);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: AuthUser,
+  ): Promise<void> {
+    await this.mealsService.deleteById(id, currentUser.userId);
   }
 }
