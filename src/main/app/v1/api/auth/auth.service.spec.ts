@@ -1,28 +1,47 @@
 import { BadRequestException } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { Test, TestingModule } from '@nestjs/testing';
+import { loadEnvVariables } from '@test/utils/load-env-variables';
 import { User } from '../users/entities/user.entity';
 import { InMemoryUsersRepository } from '../users/repositories/implementations/in-memory/in-memory-users-repository';
+import { UsersRepository } from '../users/repositories/users-repository';
 import { AuthService } from './auth.service';
 import { InvalidPasswordOrEmailError } from './errors/invalid-password-or-email.error';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 
 describe('AuthService', () => {
   let repository: InMemoryUsersRepository;
   let service: AuthService;
+  loadEnvVariables();
 
   beforeEach(async () => {
-    /* const module: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        PassportModule,
+        JwtModule.registerAsync({
+          useFactory: () => {
+            return {
+              secret: process.env.JWT_SECRET,
+              signOptions: { expiresIn: '10d' },
+            };
+          },
+        }),
+      ],
       providers: [
         AuthService,
         {
           provide: UsersRepository,
           useClass: InMemoryUsersRepository,
         },
+        LocalStrategy,
+        JwtStrategy,
       ],
-    }).compile(); */
+    }).compile();
 
-    /* service = module.get<AuthService>(AuthService); */
-
-    repository = new InMemoryUsersRepository();
-    service = new AuthService(repository);
+    repository = module.get<InMemoryUsersRepository>(UsersRepository);
+    service = module.get<AuthService>(AuthService);
   });
 
   it('should be defined', () => {
