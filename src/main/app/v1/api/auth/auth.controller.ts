@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
@@ -40,6 +47,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @ApiResponseDTO(TokenResponseDTO)
+  @HttpCode(HttpStatus.OK)
   async login(
     @CurrentUser() currentUser: AuthUser,
   ): Promise<ResponseDTO<TokenResponseDTO>> {

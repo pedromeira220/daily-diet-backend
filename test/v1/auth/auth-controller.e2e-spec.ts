@@ -50,8 +50,7 @@ describe('AuthController (e2e)', () => {
       });
 
     expect(response.status).toBe(200);
-
-    // TODO: validar se esta retornando o token
+    expect(typeof response.body.data.token).toBe('string');
   });
 
   it('/auth/login (fail with invalid password) (POST)', async () => {
