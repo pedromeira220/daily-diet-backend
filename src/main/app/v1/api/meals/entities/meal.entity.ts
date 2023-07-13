@@ -7,6 +7,7 @@ export interface MealProps {
   description: string;
   isOnDiet: boolean;
   mealDate: Date;
+  userId: UniqueEntityId;
   createdAt: Date;
   updatedAt?: Date | null;
 }
@@ -50,6 +51,10 @@ export class Meal extends Entity<MealProps> {
   set mealDate(value: Date) {
     this.props.mealDate = value;
     this.touch();
+  }
+
+  get userId() {
+    return this.props.userId;
   }
 
   private touch() {

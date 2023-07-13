@@ -3,7 +3,7 @@ import { Optional } from '@v1/common/logic/optional';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { compareSync, hashSync } from 'bcryptjs';
 
-interface UserProps {
+export interface UserProps {
   name: string;
   email: string;
   passwordHash: string;

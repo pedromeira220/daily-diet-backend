@@ -1,29 +1,53 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AuthUser } from '../auth/models/auth-user.model';
 import { CreateMealDTO } from './dtos/create-meal.dto';
 import { MealDTO } from './dtos/meal.dto';
+import { MealMapper } from './mappers/meal.mapper';
 import { MealsService } from './meals.service';
-import { MealViewModel } from './view-models/meal-view-model';
 
 @Controller('meals')
 @ApiTags('meals')
 export class MealsController {
   constructor(private readonly mealsService: MealsService) {}
 
+  /*
+   * Cria uma nova refeição
+   */
   @Post()
   @ApiResponseDTO(MealDTO)
   async create(
     @Body() createMealDTO: CreateMealDTO,
+    @CurrentUser() currentUser: AuthUser,
   ): Promise<ResponseDTO<MealDTO>> {
     const createdMeal = await this.mealsService.create({
       description: createMealDTO.description,
       isOnDiet: createMealDTO.isOnDiet,
       mealDate: createMealDTO.mealDate,
       name: createMealDTO.name,
+      userId: currentUser.userId,
     });
 
-    return MealViewModel.toHttp(createdMeal);
+    return MealMapper.toHttp(createdMeal);
+  }
+
+  @Get(':id')
+  @ApiResponseDTO(MealDTO)
+  async getById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<ResponseDTO<MealDTO>> {
+    const meal = await this.mealsService.getById(id);
+
+    return MealMapper.toHttp(meal);
   }
 }

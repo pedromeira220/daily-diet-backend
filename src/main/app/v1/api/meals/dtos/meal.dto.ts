@@ -4,6 +4,7 @@ interface MealDTOProps {
   description: string;
   isOnDiet: boolean;
   mealDate: Date;
+  userId: string;
   createdAt: Date;
   updatedAt?: Date | null;
 }
@@ -16,6 +17,7 @@ export class MealDTO implements MealDTOProps {
   mealDate: Date;
   createdAt: Date;
   updatedAt?: Date | null;
+  userId: string;
 
   constructor({
     id,
@@ -25,6 +27,7 @@ export class MealDTO implements MealDTOProps {
     mealDate,
     name,
     updatedAt,
+    userId,
   }: MealDTOProps) {
     this.id = id;
     this.name = name;
@@ -33,5 +36,6 @@ export class MealDTO implements MealDTOProps {
     this.mealDate = mealDate;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.userId = userId;
   }
 }

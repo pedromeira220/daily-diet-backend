@@ -16,6 +16,22 @@ model User {
   name          String
   email         String @unique
   password_hash String
+  meal          Meal[]
 
   @@map("users")
+}
+
+model Meal {
+  id          String    @id
+  name        String
+  description String
+  in_on_diet  Boolean
+  meal_date   DateTime
+  created_at  DateTime
+  updated_at  DateTime?
+  user_id     String
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("meals")
 }

@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { Meal } from './entities/meal.entity';
 import { MealsRepository } from './repository/meals-repository';
 
@@ -7,6 +8,7 @@ interface CreateRequest {
   description: string;
   isOnDiet: boolean;
   mealDate: Date;
+  userId: string;
 }
 
 @Injectable()
@@ -18,12 +20,14 @@ export class MealsService {
     isOnDiet,
     mealDate,
     name,
+    userId,
   }: CreateRequest): Promise<Meal> {
     const meal = Meal.create({
       name,
       description,
       isOnDiet,
       mealDate,
+      userId: new UniqueEntityId(userId),
     });
 
     await this.mealsRepository.create(meal);

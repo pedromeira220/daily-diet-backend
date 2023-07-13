@@ -1,17 +1,25 @@
+import { faker } from '@faker-js/faker';
 import { INestApplication } from '@nestjs/common';
+import { makeUser } from '@test/factories/make-user';
+import { UserMapper } from '@v1/api/users/mappers/user.mapper';
+import { PrismaService } from '@v1/database/prisma/prisma.service';
 import * as request from 'supertest';
 
-export const createAndAuthenticateUser = async (app: INestApplication<any>) => {
-  const email = 'john@email.com';
-  const password = '12345';
+export const createAndAuthenticateUser = async (
+  app: INestApplication<any>,
+  prisma: PrismaService,
+) => {
+  const email = faker.internet.email();
+  const password = faker.internet.password();
 
-  const registerResponse = await request(app.getHttpServer())
-    .post('/auth/register')
-    .send({
-      name: 'John Doe',
-      email,
-      password,
-    });
+  const previousCreatedUser = makeUser({
+    password,
+    email,
+  });
+
+  await prisma.user.create({
+    data: UserMapper.toPrisma(previousCreatedUser),
+  });
 
   const loginResponse = await request(app.getHttpServer())
     .post('/auth/login')
@@ -20,11 +28,10 @@ export const createAndAuthenticateUser = async (app: INestApplication<any>) => {
       password,
     });
 
-  const previousCreatedUserId = registerResponse.body.data.id;
-  const access_token = loginResponse.body.data.token;
+  const accessToken = loginResponse.body.data.token;
 
   return {
-    previousCreatedUserId,
-    access_token,
+    previousCreatedUser,
+    accessToken,
   };
 };

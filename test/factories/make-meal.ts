@@ -8,6 +8,7 @@ export function makeMeal(
 ) {
   const meal = Meal.create(
     {
+      userId: new UniqueEntityId(),
       name: faker.animal.fish(),
       description: faker.lorem.text(),
       isOnDiet: faker.datatype.boolean(),

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MealsController } from './meals.controller';
 import { MealsService } from './meals.service';
-import { InMemoryMealsRepository } from './repository/implementations/in-memory-meals-repository';
+import { PrismaMealsRepository } from './repository/implementations/prisma/prisma-meals-respository';
 import { MealsRepository } from './repository/meals-repository';
 
 @Module({
@@ -10,7 +10,7 @@ import { MealsRepository } from './repository/meals-repository';
     MealsService,
     {
       provide: MealsRepository,
-      useClass: InMemoryMealsRepository,
+      useClass: PrismaMealsRepository,
     },
   ],
 })

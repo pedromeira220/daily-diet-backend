@@ -1,21 +1,30 @@
 // import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { makeMeal } from '@test/factories/make-meal';
+import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { Meal } from './entities/meal.entity';
 import { MealsService } from './meals.service';
-import { InMemoryMealsRepository } from './repository/implementations/in-memory-meals-repository';
+import { InMemoryMealsRepository } from './repository/implementations/in-memory/in-memory-meals-repository';
+import { MealsRepository } from './repository/meals-repository';
 
 describe('MealsService', () => {
   let service: MealsService;
   let repository: InMemoryMealsRepository;
 
   beforeEach(async () => {
-    /*   const module: TestingModule = await Test.createTestingModule({
-      providers: [MealsService],
-    }).compile(); */
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        MealsService,
+        {
+          provide: MealsRepository,
+          useClass: InMemoryMealsRepository,
+        },
+      ],
+    }).compile();
 
-    repository = new InMemoryMealsRepository();
-    service = new MealsService(repository);
+    repository = module.get<InMemoryMealsRepository>(MealsRepository);
+    service = module.get<MealsService>(MealsService);
   });
 
   it('should be defined', () => {
@@ -28,6 +37,7 @@ describe('MealsService', () => {
       description: 'A simple salad',
       isOnDiet: true,
       mealDate: new Date(),
+      userId: new UniqueEntityId().toString(),
     });
 
     expect(createdMeal).toBeDefined();
