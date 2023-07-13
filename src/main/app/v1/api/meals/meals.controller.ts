@@ -73,11 +73,14 @@ export class MealsController {
     @CurrentUser() currentUser: AuthUser,
     @Body() dto: UpdateMealDTO,
   ): Promise<ResponseDTO<MealDTO>> {
-    const updatedMealFromService = await this.mealsService.updateById(
-      id,
-      MealMapper.fromUpdateDTOToDomain(dto),
-      currentUser.userId,
-    );
+    const updatedMealFromService = await this.mealsService.updateById({
+      mealId: id,
+      userId: currentUser.userId,
+      description: dto.description,
+      isOnDiet: dto.isOnDiet,
+      mealDate: dto.mealDate,
+      name: dto.name,
+    });
 
     return MealMapper.toHttp(updatedMealFromService);
   }

@@ -2,7 +2,7 @@ import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { makeMeal } from '@test/factories/make-meal';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
-import { subDays } from 'date-fns';
+import { addDays } from 'date-fns';
 import { Meal } from './entities/meal.entity';
 import { MealsService } from './meals.service';
 import { InMemoryMealsRepository } from './repository/implementations/in-memory/in-memory-meals-repository';
@@ -64,7 +64,7 @@ describe('MealsService', () => {
     }).rejects.toThrowError(NotFoundException);
   });
 
-  it('should not be able to get an meal that the user trying to get is not that created the meal', async () => {
+  it('should not be able to get an meal from another user', async () => {
     const previousCreatedMeal = makeMeal();
 
     repository.meals.push(previousCreatedMeal);
@@ -87,7 +87,7 @@ describe('MealsService', () => {
     expect(repository.meals.length).toBe(0);
   });
 
-  it('should not be able to delete an meal that the user trying to get is not that created the meal', async () => {
+  it('should not be able to delete an meal from another user', async () => {
     const previousCreatedMeal = makeMeal();
 
     repository.meals.push(previousCreatedMeal);
@@ -101,81 +101,46 @@ describe('MealsService', () => {
   });
 
   it('should be able to update a meal', async () => {
-    const previousCreatedMeal = makeMeal();
+    const mealCreationDate = new Date();
 
-    repository.meals.push(previousCreatedMeal);
-
-    const updatedMeal = previousCreatedMeal;
-
-    updatedMeal.name = 'Another meal';
-    updatedMeal.description = 'A description test';
-
-    await service.updateById(
-      updatedMeal.id.toString(),
-      updatedMeal,
-      previousCreatedMeal.userId.toString(),
-    );
-
-    const mealFromRepository = repository.meals.find(
-      (meal) => meal.id.toString() == updatedMeal.id.toString(),
-    );
-
-    expect(mealFromRepository?.name).toBe('Another meal');
-    expect(mealFromRepository?.description).toBe('A description test');
-  });
-
-  it('should not be able to update field that is not updatable from a meal', async () => {
     const previousCreatedMeal = makeMeal({
-      createdAt: new Date(),
+      isOnDiet: true,
+      mealDate: mealCreationDate,
     });
 
     repository.meals.push(previousCreatedMeal);
-    const createdAtInPast = subDays(previousCreatedMeal.createdAt, 10);
-    const updatedAtInPast = subDays(previousCreatedMeal.createdAt, 12);
 
-    const updatedMeal = makeMeal(
-      {
-        createdAt: createdAtInPast,
-        updatedAt: updatedAtInPast,
-        description: previousCreatedMeal.description,
-        isOnDiet: previousCreatedMeal.isOnDiet,
-        mealDate: previousCreatedMeal.mealDate,
-        name: previousCreatedMeal.name,
-        userId: new UniqueEntityId('123'),
-      },
-      previousCreatedMeal.id,
-    );
+    const updatedMealCreationDate = addDays(mealCreationDate, 2);
 
-    await service.updateById(
-      updatedMeal.id.toString(),
-      updatedMeal,
-      previousCreatedMeal.userId.toString(),
-    );
+    await service.updateById({
+      description: 'Updated description',
+      name: 'Updated name',
+      isOnDiet: false,
+      mealDate: updatedMealCreationDate,
+      mealId: previousCreatedMeal.id.toString(),
+      userId: previousCreatedMeal.userId.toString(),
+    });
 
     const mealFromRepository = repository.meals.find(
-      (meal) => meal.id.toString() == updatedMeal.id.toString(),
+      (meal) => meal.id.toString() == previousCreatedMeal.id.toString(),
     );
 
-    expect(mealFromRepository?.userId.toString()).not.toBe('123');
-    expect(mealFromRepository?.createdAt.getDate()).not.toBe(
-      createdAtInPast.getDate(),
-    );
-    expect(mealFromRepository?.updatedAt?.getDate()).not.toBe(
-      updatedAtInPast.getDate(),
-    );
+    expect(mealFromRepository?.name).toBe('Updated name');
+    expect(mealFromRepository?.description).toBe('Updated description');
+    expect(mealFromRepository?.isOnDiet).toBe(false);
+    expect(mealFromRepository?.mealDate).toBe(updatedMealCreationDate);
   });
 
-  it('should not be able to update an meal that the user trying to get is not that created the meal', async () => {
+  it('should not be able to update an meal from another user', async () => {
     const previousCreatedMeal = makeMeal();
 
     repository.meals.push(previousCreatedMeal);
 
     expect(async () => {
-      await service.updateById(
-        previousCreatedMeal.id.toString(),
-        previousCreatedMeal,
-        'fake-user-id',
-      );
+      await service.updateById({
+        mealId: previousCreatedMeal.id.toString(),
+        userId: 'fake-user-id',
+      });
     }).rejects.toThrowError(UnauthorizedException);
   });
 });

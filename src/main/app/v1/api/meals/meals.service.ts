@@ -15,6 +15,16 @@ interface CreateRequest {
   userId: string;
 }
 
+interface UpdateById {
+  description?: string;
+  name?: string;
+  mealDate?: Date;
+  isOnDiet?: boolean;
+
+  mealId: string;
+  userId: string;
+}
+
 @Injectable()
 export class MealsService {
   constructor(private mealsRepository: MealsRepository) {}
@@ -67,11 +77,14 @@ export class MealsService {
     await this.mealsRepository.deleteById(mealId);
   }
 
-  async updateById(
-    mealId: string,
-    updatedMeal: Meal,
-    userId: string,
-  ): Promise<Meal> {
+  async updateById({
+    description,
+    isOnDiet,
+    mealDate,
+    mealId,
+    name,
+    userId,
+  }: UpdateById): Promise<Meal> {
     const mealFound = await this.mealsRepository.getById(mealId);
 
     if (!mealFound) {
@@ -82,15 +95,10 @@ export class MealsService {
       throw new UnauthorizedException();
     }
 
-    const ignoreProperties = ['id', 'userId', 'createdAt', 'updatedAt'];
-
-    for (const property in updatedMeal) {
-      if (!ignoreProperties.includes(property)) {
-        if (typeof mealFound[property] === 'function') {
-          mealFound[property](updatedMeal[property]);
-        }
-      }
-    }
+    if (typeof description != 'undefined') mealFound.description = description;
+    if (typeof name != 'undefined') mealFound.name = name;
+    if (typeof isOnDiet != 'undefined') mealFound.isOnDiet = isOnDiet;
+    if (typeof mealDate != 'undefined') mealFound.mealDate = mealDate;
 
     await this.mealsRepository.save(mealFound);
 
