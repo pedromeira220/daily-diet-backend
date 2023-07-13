@@ -41,4 +41,14 @@ export class PrismaMealsRepository implements MealsRepository {
       data: MealMapper.toPrisma(meal),
     });
   }
+
+  async countByUserId(userId: string): Promise<number> {
+    const mealsCount = await this.prisma.meal.count({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    return mealsCount;
+  }
 }

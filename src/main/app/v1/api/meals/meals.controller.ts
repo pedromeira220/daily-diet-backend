@@ -12,7 +12,9 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
+import { NumberDTO } from '@v1/common/dtos/number.dto';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
+import { ResponseDTOMapper } from '@v1/common/mappers/response-dto.mapper';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AuthUser } from '../auth/models/auth-user.model';
 import { CreateMealDTO } from './dtos/create-meal.dto';
@@ -83,5 +85,17 @@ export class MealsController {
     });
 
     return MealMapper.toHttp(updatedMealFromService);
+  }
+
+  @Get('/metrics/meals-count')
+  @ApiResponseDTO(NumberDTO)
+  async getMealsCountByUserMetric(
+    @CurrentUser() currentUser: AuthUser,
+  ): Promise<ResponseDTO<NumberDTO>> {
+    const mealsCount = await this.mealsService.getMealsCountByUser(
+      currentUser.userId,
+    );
+
+    return ResponseDTOMapper.fromNumber(mealsCount);
   }
 }

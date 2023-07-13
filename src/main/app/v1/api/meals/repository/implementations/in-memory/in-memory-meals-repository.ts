@@ -35,4 +35,9 @@ export class InMemoryMealsRepository implements MealsRepository {
 
     this.meals[mealIndex] = meal;
   }
+
+  async countByUserId(userId: string): Promise<number> {
+    return this.meals.filter((meal) => meal.userId.toString() === userId)
+      .length;
+  }
 }

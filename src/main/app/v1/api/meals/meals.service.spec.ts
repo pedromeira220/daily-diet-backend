@@ -143,4 +143,21 @@ describe('MealsService', () => {
       });
     }).rejects.toThrowError(UnauthorizedException);
   });
+
+  it('should count meals from user', async () => {
+    const MEALS_COUNT = 5;
+    const userId = 'user-id';
+
+    for (let i = 0; i < MEALS_COUNT; i++) {
+      repository.meals.push(
+        makeMeal({
+          userId: new UniqueEntityId(userId),
+        }),
+      );
+    }
+
+    const mealsCountFromService = await service.getMealsCountByUser(userId);
+
+    expect(mealsCountFromService).toBe(MEALS_COUNT);
+  });
 });

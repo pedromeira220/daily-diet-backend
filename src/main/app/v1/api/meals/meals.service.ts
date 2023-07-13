@@ -104,4 +104,10 @@ export class MealsService {
 
     return mealFound;
   }
+
+  async getMealsCountByUser(userId: string) {
+    const mealsCount = await this.mealsRepository.countByUserId(userId);
+
+    return mealsCount;
+  }
 }
