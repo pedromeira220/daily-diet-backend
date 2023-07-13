@@ -1,7 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { UsersRepository } from '../users/repositories/users-repository';
 import { InvalidPasswordOrEmailError } from './errors/invalid-password-or-email.error';
+import { AuthUser } from './models/auth-user.model';
+import { UserPayload } from './models/user-payload.model';
 
 interface RegisterUserRequest {
   name: string;
@@ -16,7 +19,10 @@ interface LoginRequest {
 
 @Injectable()
 export class AuthService {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async registerUser({
     email,
@@ -56,5 +62,15 @@ export class AuthService {
     }
 
     return userFound;
+  }
+
+  async login(user: AuthUser) {
+    const payload: UserPayload = {
+      sub: user.userId,
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }

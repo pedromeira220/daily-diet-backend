@@ -1,9 +1,10 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { AuthModule } from '@v1/api/auth/auth.module';
 
 import { AllExceptionFilter } from '@v1/common/filters/all-exception.filter';
 
+import { JwtAuthGuard } from './api/auth/guards/jwt-auth.guard';
 import { MealsModule } from './api/meals/meals.module';
 import { UsersModule } from './api/users/users.module';
 import { DatabaseModule } from './database/database.module';
@@ -19,6 +20,10 @@ import { DatabaseModule } from './database/database.module';
     {
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
 })

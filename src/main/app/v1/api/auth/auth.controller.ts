@@ -13,9 +13,10 @@ import { UserDTO } from '../users/dtos/user.dto';
 import { UserMapper } from '../users/mappers/user.mapper';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { Public } from './decorators/public.decorator';
 import { RegisterRequestDTO } from './dtos/register-request.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { AuthUser } from './models/auth-user.mode';
+import { AuthUser } from './models/auth-user.model';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,6 +26,7 @@ export class AuthController {
   /**
    * Cria um novo usuário
    */
+  @Public()
   @Post('/register')
   @ApiResponseDTO(UserDTO)
   async register(
@@ -39,10 +41,13 @@ export class AuthController {
     return UserMapper.toHttp(registeredUser);
   }
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async login(@CurrentUser() currentUser: AuthUser) {
-    return currentUser; // TODO: retornar o token do usuário
+    const { access_token } = await this.authService.login(currentUser);
+
+    return { access_token };
   }
 }
