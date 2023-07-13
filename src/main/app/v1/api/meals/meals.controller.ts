@@ -8,6 +8,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
@@ -16,6 +17,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AuthUser } from '../auth/models/auth-user.model';
 import { CreateMealDTO } from './dtos/create-meal.dto';
 import { MealDTO } from './dtos/meal.dto';
+import { UpdateMealDTO } from './dtos/update-meal.dto';
 import { MealMapper } from './mappers/meal.mapper';
 import { MealsService } from './meals.service';
 
@@ -62,5 +64,21 @@ export class MealsController {
     @CurrentUser() currentUser: AuthUser,
   ): Promise<void> {
     await this.mealsService.deleteById(id, currentUser.userId);
+  }
+
+  @Put(':id')
+  @ApiResponseDTO(MealDTO)
+  async updateById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: AuthUser,
+    @Body() dto: UpdateMealDTO,
+  ): Promise<ResponseDTO<MealDTO>> {
+    const updatedMealFromService = await this.mealsService.updateById(
+      id,
+      MealMapper.fromUpdateDTOToDomain(dto),
+      currentUser.userId,
+    );
+
+    return MealMapper.toHttp(updatedMealFromService);
   }
 }

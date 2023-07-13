@@ -2,6 +2,7 @@ import { Meal as MealRaw } from '@prisma/client';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { MealDTO } from '../dtos/meal.dto';
+import { UpdateMealDTO } from '../dtos/update-meal.dto';
 import { Meal } from '../entities/meal.entity';
 
 export class MealMapper {
@@ -47,6 +48,18 @@ export class MealMapper {
       updatedAt: meal.updatedAt,
       id: meal.id.toString(),
       userId: meal.userId.toString(),
+    });
+  }
+
+  static fromUpdateDTOToDomain(updateDTO: UpdateMealDTO): Meal {
+    return Meal.create({
+      description: updateDTO.description ?? '',
+      isOnDiet: updateDTO.isOnDiet ?? false,
+      mealDate: updateDTO.mealDate ?? new Date(),
+      name: updateDTO.name ?? '',
+      userId: new UniqueEntityId(),
+      createdAt: new Date(),
+      updatedAt: null,
     });
   }
 }

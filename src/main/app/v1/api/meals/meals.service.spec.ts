@@ -1,8 +1,8 @@
-// import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { makeMeal } from '@test/factories/make-meal';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
+import { subDays } from 'date-fns';
 import { Meal } from './entities/meal.entity';
 import { MealsService } from './meals.service';
 import { InMemoryMealsRepository } from './repository/implementations/in-memory/in-memory-meals-repository';
@@ -122,6 +122,47 @@ describe('MealsService', () => {
 
     expect(mealFromRepository?.name).toBe('Another meal');
     expect(mealFromRepository?.description).toBe('A description test');
+  });
+
+  it('should not be able to update field that is not updatable from a meal', async () => {
+    const previousCreatedMeal = makeMeal({
+      createdAt: new Date(),
+    });
+
+    repository.meals.push(previousCreatedMeal);
+    const createdAtInPast = subDays(previousCreatedMeal.createdAt, 10);
+    const updatedAtInPast = subDays(previousCreatedMeal.createdAt, 12);
+
+    const updatedMeal = makeMeal(
+      {
+        createdAt: createdAtInPast,
+        updatedAt: updatedAtInPast,
+        description: previousCreatedMeal.description,
+        isOnDiet: previousCreatedMeal.isOnDiet,
+        mealDate: previousCreatedMeal.mealDate,
+        name: previousCreatedMeal.name,
+        userId: new UniqueEntityId('123'),
+      },
+      previousCreatedMeal.id,
+    );
+
+    await service.updateById(
+      updatedMeal.id.toString(),
+      updatedMeal,
+      previousCreatedMeal.userId.toString(),
+    );
+
+    const mealFromRepository = repository.meals.find(
+      (meal) => meal.id.toString() == updatedMeal.id.toString(),
+    );
+
+    expect(mealFromRepository?.userId.toString()).not.toBe('123');
+    expect(mealFromRepository?.createdAt.getDate()).not.toBe(
+      createdAtInPast.getDate(),
+    );
+    expect(mealFromRepository?.updatedAt?.getDate()).not.toBe(
+      updatedAtInPast.getDate(),
+    );
   });
 
   it('should not be able to update an meal that the user trying to get is not that created the meal', async () => {

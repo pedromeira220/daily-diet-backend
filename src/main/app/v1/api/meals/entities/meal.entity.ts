@@ -13,6 +13,7 @@ export interface MealProps {
 }
 
 export class Meal extends Entity<MealProps> {
+  [key: string]: any;
   get name() {
     return this.props.name;
   }

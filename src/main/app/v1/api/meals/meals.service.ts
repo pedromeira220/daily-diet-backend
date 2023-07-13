@@ -82,10 +82,15 @@ export class MealsService {
       throw new UnauthorizedException();
     }
 
-    mealFound.name = updatedMeal.name;
-    mealFound.description = updatedMeal.description;
-    mealFound.mealDate = updatedMeal.mealDate;
-    mealFound.isOnDiet = updatedMeal.isOnDiet;
+    const ignoreProperties = ['id', 'userId', 'createdAt', 'updatedAt'];
+
+    for (const property in updatedMeal) {
+      if (!ignoreProperties.includes(property)) {
+        if (typeof mealFound[property] === 'function') {
+          mealFound[property](updatedMeal[property]);
+        }
+      }
+    }
 
     await this.mealsRepository.save(mealFound);
 
