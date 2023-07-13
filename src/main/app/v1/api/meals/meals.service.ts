@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { Meal } from './entities/meal.entity';
 import { MealsRepository } from './repository/meals-repository';
@@ -35,36 +39,47 @@ export class MealsService {
     return meal;
   }
 
-  async getById(mealId: string): Promise<Meal> {
-    // TODO: uma refeição só pode ser visualizada pelo usuário que a criou
+  async getById(mealId: string, userId: string): Promise<Meal> {
     const mealFound = await this.mealsRepository.getById(mealId);
 
     if (!mealFound) {
       throw new NotFoundException('Refeição não encontrada');
+    }
+
+    if (mealFound.userId.toString() != userId) {
+      throw new UnauthorizedException();
     }
 
     return mealFound;
   }
 
-  async deleteById(mealId: string): Promise<void> {
-    // TODO: uma refeição só pode ser deletada pelo usuário a qual a criou
-
+  async deleteById(mealId: string, userId: string): Promise<void> {
     const mealFound = await this.mealsRepository.getById(mealId);
 
     if (!mealFound) {
       throw new NotFoundException('Refeição não encontrada');
     }
 
+    if (mealFound.userId.toString() != userId) {
+      throw new UnauthorizedException();
+    }
+
     await this.mealsRepository.deleteById(mealId);
   }
 
-  async updateById(mealId: string, updatedMeal: Meal): Promise<Meal> {
-    // TODO: uma refeição só pode ser atualizada pelo usuário a qual a criou
-
+  async updateById(
+    mealId: string,
+    updatedMeal: Meal,
+    userId: string,
+  ): Promise<Meal> {
     const mealFound = await this.mealsRepository.getById(mealId);
 
     if (!mealFound) {
       throw new NotFoundException('Refeição não encontrada');
+    }
+
+    if (mealFound.userId.toString() != userId) {
+      throw new UnauthorizedException();
     }
 
     mealFound.name = updatedMeal.name;

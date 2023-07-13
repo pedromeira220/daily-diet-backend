@@ -45,8 +45,9 @@ export class MealsController {
   @ApiResponseDTO(MealDTO)
   async getById(
     @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: AuthUser,
   ): Promise<ResponseDTO<MealDTO>> {
-    const meal = await this.mealsService.getById(id);
+    const meal = await this.mealsService.getById(id, currentUser.userId);
 
     return MealMapper.toHttp(meal);
   }

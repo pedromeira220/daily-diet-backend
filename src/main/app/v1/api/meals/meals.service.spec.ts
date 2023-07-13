@@ -1,5 +1,5 @@
 // import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { makeMeal } from '@test/factories/make-meal';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
@@ -50,15 +50,28 @@ describe('MealsService', () => {
 
     repository.meals.push(previousCreatedMeal);
 
-    const mealFound = await service.getById(previousCreatedMeal.id.toString());
+    const mealFound = await service.getById(
+      previousCreatedMeal.id.toString(),
+      previousCreatedMeal.userId.toString(),
+    );
 
     expect(mealFound.id.toString()).toBe(previousCreatedMeal.id.toString());
   });
 
   it('should not be able to get an meal by id that does not exits', async () => {
     expect(async () => {
-      await service.getById('fake-id');
+      await service.getById('fake-id', 'fake-user-id');
     }).rejects.toThrowError(NotFoundException);
+  });
+
+  it('should not be able to get an meal that the user trying to get is not that created the meal', async () => {
+    const previousCreatedMeal = makeMeal();
+
+    repository.meals.push(previousCreatedMeal);
+
+    expect(async () => {
+      await service.getById(previousCreatedMeal.id.toString(), 'fake-user-id');
+    }).rejects.toThrowError(UnauthorizedException);
   });
 
   it('should be able to delete a meal', async () => {
@@ -66,9 +79,25 @@ describe('MealsService', () => {
 
     repository.meals.push(previousCreatedMeal);
 
-    await service.deleteById(previousCreatedMeal.id.toString());
+    await service.deleteById(
+      previousCreatedMeal.id.toString(),
+      previousCreatedMeal.userId.toString(),
+    );
 
     expect(repository.meals.length).toBe(0);
+  });
+
+  it('should not be able to delete an meal that the user trying to get is not that created the meal', async () => {
+    const previousCreatedMeal = makeMeal();
+
+    repository.meals.push(previousCreatedMeal);
+
+    expect(async () => {
+      await service.deleteById(
+        previousCreatedMeal.id.toString(),
+        'fake-user-id',
+      );
+    }).rejects.toThrowError(UnauthorizedException);
   });
 
   it('should be able to update a meal', async () => {
@@ -81,7 +110,11 @@ describe('MealsService', () => {
     updatedMeal.name = 'Another meal';
     updatedMeal.description = 'A description test';
 
-    await service.updateById(updatedMeal.id.toString(), updatedMeal);
+    await service.updateById(
+      updatedMeal.id.toString(),
+      updatedMeal,
+      previousCreatedMeal.userId.toString(),
+    );
 
     const mealFromRepository = repository.meals.find(
       (meal) => meal.id.toString() == updatedMeal.id.toString(),
@@ -89,5 +122,19 @@ describe('MealsService', () => {
 
     expect(mealFromRepository?.name).toBe('Another meal');
     expect(mealFromRepository?.description).toBe('A description test');
+  });
+
+  it('should not be able to update an meal that the user trying to get is not that created the meal', async () => {
+    const previousCreatedMeal = makeMeal();
+
+    repository.meals.push(previousCreatedMeal);
+
+    expect(async () => {
+      await service.updateById(
+        previousCreatedMeal.id.toString(),
+        previousCreatedMeal,
+        'fake-user-id',
+      );
+    }).rejects.toThrowError(UnauthorizedException);
   });
 });
