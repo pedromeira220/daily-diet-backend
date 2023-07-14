@@ -52,4 +52,61 @@ export class InMemoryMealsRepository implements MealsRepository {
       (meal) => meal.userId.toString() === userId && meal.isOnDiet === false,
     ).length;
   }
+
+  async countBestSequence(userId: string): Promise<number> {
+    let bestSequenceCount = 0;
+    let currentCount = 0;
+    let previousDayWasOnDiet = true;
+
+    const mealsFromUser = this.meals.filter(
+      (meal) => meal.userId.toString() === userId,
+    );
+
+    const sortedMealsByMealDate = mealsFromUser.sort(
+      (a, b) => a.mealDate.getTime() - b.mealDate.getTime(),
+    );
+
+    sortedMealsByMealDate.forEach((meal) => {
+      if (meal.isOnDiet) {
+        currentCount = currentCount + 1;
+
+        if (previousDayWasOnDiet) {
+          if (currentCount > bestSequenceCount) {
+            bestSequenceCount = currentCount;
+          }
+        }
+
+        previousDayWasOnDiet = true;
+      } else {
+        currentCount = 0;
+
+        previousDayWasOnDiet = false;
+      }
+    });
+
+    if (currentCount > bestSequenceCount) {
+      bestSequenceCount = currentCount;
+    }
+
+    return bestSequenceCount;
+
+    /*
+    
+    s n s s n n n s s s s n s n n n n s s s 
+
+    melhor - 4
+    atual - 3
+
+    o dia atual está na dieta
+      soma 1 no contador atual 
+      o anterior está na dieta 
+        se o contador atual for maior que a melhor sequencia, a melhor sequencia é igual o atual
+    caso contrário 
+      atual = 0
+
+
+    resultado = 4
+    
+    */
+  }
 }

@@ -8,4 +8,5 @@ export abstract class MealsRepository {
   abstract countByUserId(userId: string): Promise<number>;
   abstract countAllThatAreOnDietByUserId(userId: string): Promise<number>;
   abstract countAllThatAreNotOnDietByUserId(userId: string): Promise<number>;
+  abstract countBestSequence(userId: string): Promise<number>;
 }

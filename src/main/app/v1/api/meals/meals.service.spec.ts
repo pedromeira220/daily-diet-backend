@@ -220,4 +220,130 @@ describe('MealsService', () => {
 
     expect(mealsCountFromService).toBe(MEALS_COUNT_THAT_ARE_NOT_ON_DIET);
   });
+
+  it('should count meals best sequence with 4 best sequence', async () => {
+    const userId = 'user-id';
+    const bestSequence = 4;
+
+    const daysOnDiet = [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+    ];
+
+    daysOnDiet.forEach((currentDayIsOnDiet, index) => {
+      repository.meals.push(
+        makeMeal({
+          userId: new UniqueEntityId(userId),
+          isOnDiet: currentDayIsOnDiet,
+          mealDate: addDays(new Date(), index),
+        }),
+      );
+    });
+
+    const mealsCountFromService = await service.getBestSequence(userId);
+
+    expect(mealsCountFromService).toBe(bestSequence);
+  });
+
+  it('should count meals best sequence with 0 best sequence', async () => {
+    const userId = 'user-id';
+    const bestSequence = 0;
+
+    const daysOnDiet = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
+
+    daysOnDiet.forEach((currentDayIsOnDiet, index) => {
+      repository.meals.push(
+        makeMeal({
+          userId: new UniqueEntityId(userId),
+          isOnDiet: currentDayIsOnDiet,
+          mealDate: addDays(new Date(), index),
+        }),
+      );
+    });
+
+    const mealsCountFromService = await service.getBestSequence(userId);
+
+    expect(mealsCountFromService).toBe(bestSequence);
+  });
+
+  it('should count meals best sequence with 2 best sequence', async () => {
+    const userId = 'user-id';
+    const bestSequence = 2;
+
+    const daysOnDiet = [
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+    ];
+
+    daysOnDiet.forEach((currentDayIsOnDiet, index) => {
+      repository.meals.push(
+        makeMeal({
+          userId: new UniqueEntityId(userId),
+          isOnDiet: currentDayIsOnDiet,
+          mealDate: addDays(new Date(), index),
+        }),
+      );
+    });
+
+    const mealsCountFromService = await service.getBestSequence(userId);
+
+    expect(mealsCountFromService).toBe(bestSequence);
+  });
 });

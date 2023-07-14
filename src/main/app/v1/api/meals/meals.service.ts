@@ -125,4 +125,10 @@ export class MealsService {
 
     return mealsCount;
   }
+
+  async getBestSequence(userId: string) {
+    const bestSequence = await this.mealsRepository.countBestSequence(userId);
+
+    return bestSequence;
+  }
 }
