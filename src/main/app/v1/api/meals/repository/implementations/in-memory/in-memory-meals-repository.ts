@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Page } from '@v1/common/value-objects/page';
+import { Pageable } from '@v1/common/value-objects/pageable';
 import { Meal } from '../../../entities/meal.entity';
 import { MealsRepository } from '../../meals-repository';
 
@@ -89,24 +91,36 @@ export class InMemoryMealsRepository implements MealsRepository {
     }
 
     return bestSequenceCount;
+  }
 
-    /*
-    
-    s n s s n n n s s s s n s n n n n s s s 
+  async findAllByUserId(
+    userId: string,
+    pageable: Pageable,
+  ): Promise<Page<Meal>> {
+    const mealsFromUser = this.meals.filter(
+      (meal) => meal.userId.toString() == userId,
+    );
 
-    melhor - 4
-    atual - 3
+    console.log('> mealsFromUser', mealsFromUser.length);
 
-    o dia atual está na dieta
-      soma 1 no contador atual 
-      o anterior está na dieta 
-        se o contador atual for maior que a melhor sequencia, a melhor sequencia é igual o atual
-    caso contrário 
-      atual = 0
+    console.log('> pageable', pageable);
+    console.log({
+      start: pageable.pageSize * pageable.pageNumber,
+      end: pageable.pageSize * (pageable.pageNumber + 1),
+    });
 
+    const paginatedMeals = mealsFromUser.slice(
+      pageable.pageSize * pageable.pageNumber,
+      pageable.pageSize * (pageable.pageNumber + 1),
+    );
 
-    resultado = 4
-    
-    */
+    console.log('> paginatedMeals', paginatedMeals.length);
+
+    return Page.create({
+      content: paginatedMeals,
+      pageNumber: pageable.pageNumber,
+      pageSize: pageable.pageSize,
+      totalElements: mealsFromUser.length,
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { makeMeal } from '@test/factories/make-meal';
+import { Pageable } from '@v1/common/value-objects/pageable';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { addDays } from 'date-fns';
 import { Meal } from './entities/meal.entity';
@@ -345,5 +346,48 @@ describe('MealsService', () => {
     const mealsCountFromService = await service.getBestSequence(userId);
 
     expect(mealsCountFromService).toBe(bestSequence);
+  });
+
+  it('should return meals from user paginated', async () => {
+    const MEALS_COUNT = 22;
+    const userId = 'user-id';
+    const pageSize = 20;
+
+    for (let i = 0; i < MEALS_COUNT; i++) {
+      repository.meals.push(
+        makeMeal({
+          name: `Meal ${i}`,
+          userId: new UniqueEntityId(userId),
+        }),
+      );
+    }
+
+    let paginatedMeals = await service.getAllFromUser(
+      userId,
+      new Pageable({
+        pageNumber: 0,
+        pageSize: 20,
+      }),
+    );
+
+    expect(paginatedMeals.content.length).toBe(pageSize);
+    expect(paginatedMeals.first).toBe(true);
+    expect(paginatedMeals.empty).toBe(false);
+    expect(paginatedMeals.totalPages).toBe(2);
+    expect(paginatedMeals.totalElements).toBe(MEALS_COUNT);
+
+    paginatedMeals = await service.getAllFromUser(
+      userId,
+      new Pageable({
+        pageNumber: 1,
+        pageSize: 20,
+      }),
+    );
+
+    expect(paginatedMeals.content.length).toBe(2);
+    expect(paginatedMeals.first).toBe(false);
+    expect(paginatedMeals.empty).toBe(false);
+    expect(paginatedMeals.totalPages).toBe(2);
+    expect(paginatedMeals.totalElements).toBe(MEALS_COUNT);
   });
 });

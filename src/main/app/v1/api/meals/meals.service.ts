@@ -3,6 +3,8 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Page } from '@v1/common/value-objects/page';
+import { Pageable } from '@v1/common/value-objects/pageable';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { Meal } from './entities/meal.entity';
 import { MealsRepository } from './repository/meals-repository';
@@ -130,5 +132,12 @@ export class MealsService {
     const bestSequence = await this.mealsRepository.countBestSequence(userId);
 
     return bestSequence;
+  }
+
+  async getAllFromUser(
+    userId: string,
+    pageable: Pageable,
+  ): Promise<Page<Meal>> {
+    return this.mealsRepository.findAllByUserId(userId, pageable);
   }
 }

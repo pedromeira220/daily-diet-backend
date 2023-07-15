@@ -12,5 +12,6 @@
   "editor.tabSize": 2,
   "html.format.wrapAttributes": "force",
   "html.format.wrapLineLength": 120,
-  "html.format.wrapAttributesIndentSize": null
+  "html.format.wrapAttributesIndentSize": null,
+  "cSpell.words": ["Pageable", "pageable"]
 }
