@@ -118,4 +118,16 @@ export class MealsController {
 
     return ResponseDTOMapper.fromNumber(mealsCount);
   }
+
+  @Get('/metrics/best-sequence')
+  @ApiResponseDTO(NumberDTO)
+  async getMealsBestSequence(
+    @CurrentUser() currentUser: AuthUser,
+  ): Promise<ResponseDTO<NumberDTO>> {
+    const mealsBestSequenceCount = await this.mealsService.getBestSequence(
+      currentUser.userId,
+    );
+
+    return ResponseDTOMapper.fromNumber(mealsBestSequenceCount);
+  }
 }

@@ -197,6 +197,55 @@ describe('MealsController (e2e)', () => {
     expect(response.body.data.value).toBe(MEALS_COUNT_THAT_ARE_NOT_ON_DIET);
   });
 
+  it('should count meals best sequence', async () => {
+    const { accessToken, previousCreatedUser } =
+      await createAndAuthenticateUser(app, prisma);
+
+    const userId = previousCreatedUser.id;
+    const bestSequence = 4;
+
+    const daysOnDiet = [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+    ];
+
+    for await (const [index, currentDayIsOnDiet] of daysOnDiet.entries()) {
+      await prisma.meal.create({
+        data: MealMapper.toPrisma(
+          makeMeal({
+            userId,
+            isOnDiet: currentDayIsOnDiet,
+            mealDate: addDays(new Date(), index),
+          }),
+        ),
+      });
+    }
+
+    const response = await request(app.getHttpServer())
+      .get('/meals/metrics/best-sequence')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(response.body.data.value).toBe(bestSequence);
+  });
+
   beforeEach(async () => {
     await app.close();
   });

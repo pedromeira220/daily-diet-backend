@@ -73,4 +73,29 @@ export class PrismaMealsRepository implements MealsRepository {
 
     return mealsCount;
   }
+
+  async countBestSequence(userId: string): Promise<number> {
+    const result = (await this.prisma.$queryRaw`
+  SELECT meal_date, is_on_diet,
+    COUNT(*) FILTER (WHERE is_on_diet = true) OVER (ORDER BY meal_date) AS sequence_count
+  FROM meals
+  WHERE user_id = ${userId}
+  ORDER BY meal_date
+`) as any;
+    let bestSequenceCount = 0;
+    let currentCount = 0;
+
+    for (const row of result) {
+      if (row.is_on_diet) {
+        currentCount++;
+        if (currentCount > bestSequenceCount) {
+          bestSequenceCount = currentCount;
+        }
+      } else {
+        currentCount = 0;
+      }
+    }
+
+    return bestSequenceCount;
+  }
 }
