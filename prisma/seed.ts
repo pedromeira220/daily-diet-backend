@@ -16,13 +16,24 @@ export const prisma = new PrismaClient({
 const createUsers = async () => {
   const COUNT_OF_USERS_TO_CREATE = getRandomArbitrary(300, 600);
 
-  const userIdList: string[] = [];
+  const userIdList: UniqueEntityId[] = [];
 
   const usersToCreate = Array.from({ length: COUNT_OF_USERS_TO_CREATE }).map(
-    () => {
+    (_, index) => {
+      if (index == 0) {
+        const userToCreate = makeUser({
+          email: index == 0 ? 'admin@admin.com' : undefined,
+          name: index == 0 ? 'Admin' : undefined,
+          password: index == 0 ? 'admin123' : undefined,
+        });
+
+        userIdList.push(userToCreate.id);
+        return UserMapper.toPrisma(userToCreate);
+      }
+
       const userToCreate = makeUser();
 
-      userIdList.push(userToCreate.id.toString());
+      userIdList.push(userToCreate.id);
       return UserMapper.toPrisma(userToCreate);
     },
   );
@@ -36,12 +47,12 @@ const createUsers = async () => {
   }
 };
 
-const createMealsForUser = async (userId: string) => {
+const createMealsForUser = async (userId: UniqueEntityId) => {
   const COUNT_OF_MEALS_TO_CREATE = getRandomArbitrary(400, 600);
 
   await prisma.meal.createMany({
     data: Array.from({ length: COUNT_OF_MEALS_TO_CREATE }).map(() => {
-      const mealToCreate = makeMeal({ userId: new UniqueEntityId(userId) });
+      const mealToCreate = makeMeal({ userId });
 
       return MealMapper.toPrisma(mealToCreate);
     }),

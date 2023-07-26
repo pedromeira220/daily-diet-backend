@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Meal } from '@v1/api/meals/entities/meal.entity';
 import { MealMapper } from '@v1/api/meals/mappers/meal.mapper';
+import { Page } from '@v1/common/value-objects/page';
+import { Pageable } from '@v1/common/value-objects/pageable';
 import { PrismaService } from '@v1/database/prisma/prisma.service';
 import { MealsRepository } from '../../meals-repository';
 
@@ -98,5 +100,30 @@ export class PrismaMealsRepository implements MealsRepository {
     }
 
     return bestSequenceCount;
+  }
+
+  async findAllByUserId(
+    userId: string,
+    pageable: Pageable,
+  ): Promise<Page<Meal>> {
+    const mealsFromUser = await this.prisma.meal.findMany({
+      where: {
+        user_id: userId,
+      },
+      skip: pageable.pageNumber * (pageable.pageSize - 1),
+    });
+
+    const totalElements = await this.prisma.meal.count({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    return Page.create({
+      content: mealsFromUser.map((mealRaw) => MealMapper.toDomain(mealRaw)),
+      pageNumber: pageable.pageNumber,
+      pageSize: pageable.pageSize,
+      totalElements,
+    });
   }
 }
