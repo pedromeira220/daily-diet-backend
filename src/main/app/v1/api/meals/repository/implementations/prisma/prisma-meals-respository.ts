@@ -111,6 +111,7 @@ export class PrismaMealsRepository implements MealsRepository {
         user_id: userId,
       },
       skip: pageable.pageNumber * (pageable.pageSize - 1),
+      take: pageable.pageSize,
     });
 
     const totalElements = await this.prisma.meal.count({
@@ -119,7 +120,7 @@ export class PrismaMealsRepository implements MealsRepository {
       },
     });
 
-    return Page.create({
+    return Page.create<Meal>({
       content: mealsFromUser.map((mealRaw) => MealMapper.toDomain(mealRaw)),
       pageNumber: pageable.pageNumber,
       pageSize: pageable.pageSize,

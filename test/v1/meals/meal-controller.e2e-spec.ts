@@ -246,6 +246,31 @@ describe('MealsController (e2e)', () => {
     expect(response.body.data.value).toBe(bestSequence);
   });
 
+  it.only('/meals/user/{id} (GET)', async () => {
+    const PAGE_SIZE = 20;
+    const MEALS_COUNT = 26;
+    const PAGE_NUMBER = 0;
+
+    const { accessToken, previousCreatedUser } =
+      await createAndAuthenticateUser(app, prisma);
+
+    for (let i = 0; i < MEALS_COUNT; i++) {
+      const mealToCreate = makeMeal({ userId: previousCreatedUser.id });
+
+      await prisma.meal.create({
+        data: MealMapper.toPrisma(mealToCreate),
+      });
+    }
+
+    const response = await request(app.getHttpServer())
+      .get(`/meals/users/${previousCreatedUser.id.toString()}`)
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.totalElements).toBe(MEALS_COUNT);
+    expect(response.body.data.content).toHaveLength(PAGE_SIZE);
+  });
+
   beforeEach(async () => {
     await app.close();
   });
