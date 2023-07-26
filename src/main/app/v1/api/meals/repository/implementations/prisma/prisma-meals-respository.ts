@@ -110,7 +110,7 @@ export class PrismaMealsRepository implements MealsRepository {
       where: {
         user_id: userId,
       },
-      skip: pageable.pageNumber * (pageable.pageSize - 1),
+      skip: pageable.pageNumber * pageable.pageSize,
       take: pageable.pageSize,
     });
 

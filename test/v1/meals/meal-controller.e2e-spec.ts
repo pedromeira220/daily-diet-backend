@@ -246,7 +246,7 @@ describe('MealsController (e2e)', () => {
     expect(response.body.data.value).toBe(bestSequence);
   });
 
-  it.only('/meals/user/{id} (GET)', async () => {
+  it('/meals/user/{id} (GET)', async () => {
     const PAGE_SIZE = 20;
     const MEALS_COUNT = 26;
     const PAGE_NUMBER = 0;
@@ -262,13 +262,29 @@ describe('MealsController (e2e)', () => {
       });
     }
 
-    const response = await request(app.getHttpServer())
+    let response = await request(app.getHttpServer())
       .get(`/meals/users/${previousCreatedUser.id.toString()}`)
+      .query({
+        pageNumber: PAGE_NUMBER,
+        pageSize: PAGE_SIZE,
+      })
       .set('Authorization', `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
     expect(response.body.data.totalElements).toBe(MEALS_COUNT);
-    expect(response.body.data.content).toHaveLength(PAGE_SIZE);
+    expect(response.body.data.content.length).toBe(PAGE_SIZE);
+
+    response = await request(app.getHttpServer())
+      .get(`/meals/users/${previousCreatedUser.id.toString()}`)
+      .query({
+        pageNumber: 1,
+        pageSize: PAGE_SIZE,
+      })
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.totalElements).toBe(MEALS_COUNT);
+    expect(response.body.data.content.length).toBe(6);
   });
 
   beforeEach(async () => {

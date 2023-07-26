@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
+import { PageableQueryParam } from '@v1/common/decorators/pageable.decorator';
 import { NumberDTO } from '@v1/common/dtos/number.dto';
 import { PageDTO } from '@v1/common/dtos/page.dto';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
@@ -137,11 +138,9 @@ export class MealsController {
   @Get('/users/:id')
   async getAllMealsFromUser(
     @Param('id', new ParseUUIDPipe()) id: string,
+    @PageableQueryParam() pageable: Pageable,
   ): Promise<ResponseDTO<PageDTO<MealDTO>>> {
-    const mealsFromUser = await this.mealsService.getAllFromUser(
-      id,
-      new Pageable({ pageNumber: 0, pageSize: 20 }),
-    );
+    const mealsFromUser = await this.mealsService.getAllFromUser(id, pageable);
 
     const mealsFromUserAsDTO = mealsFromUser.content.map((meal) =>
       MealMapper.toDTO(meal),
