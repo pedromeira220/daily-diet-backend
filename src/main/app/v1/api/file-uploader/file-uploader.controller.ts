@@ -1,5 +1,6 @@
 import {
   Controller,
+  HttpCode,
   HttpStatus,
   ParseFilePipeBuilder,
   Post,
@@ -8,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
+import { File } from '@v1/common/value-objects/file';
 import { FileUploaderService } from './file-uploader.service';
 
 @ApiTags('file-uploader')
@@ -17,7 +19,8 @@ export class FileUploaderController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(
+  @HttpCode(HttpStatus.CREATED)
+  async uploadFile(
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
@@ -31,10 +34,12 @@ export class FileUploaderController {
           fileIsRequired: true,
         }),
     )
-    file: Express.Multer.File,
+    file: File,
   ) {
     console.log('> file', file);
 
-    return file;
+    await this.fileUploaderService.upload(file);
+
+    return { created: 'created' };
   }
 }
