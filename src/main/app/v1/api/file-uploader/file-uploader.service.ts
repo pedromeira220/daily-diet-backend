@@ -7,6 +7,6 @@ export class FileUploaderService {
   constructor(private fileUploaderAdapter: FileUploaderAdapter) {}
 
   async upload(file: File) {
-    await this.fileUploaderAdapter.upload(file);
+    return await this.fileUploaderAdapter.upload(file);
   }
 }

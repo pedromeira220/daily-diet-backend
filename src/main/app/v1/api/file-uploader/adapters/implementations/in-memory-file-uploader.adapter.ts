@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
-import { createWriteStream } from 'node:fs';
+import { createWriteStream, existsSync, mkdirSync } from 'node:fs';
 import { extname, join } from 'node:path';
 import { FileUploaderAdapter } from '../file-uploader.adpater';
 
 export class InMemoryFileUploaderAdapter implements FileUploaderAdapter {
-  async upload(file: Express.Multer.File): Promise<void> {
+  async upload(file: Express.Multer.File): Promise<{ fileName: string }> {
     const fileId = randomUUID();
     const extension = extname(file.originalname);
 
@@ -19,12 +19,19 @@ export class InMemoryFileUploaderAdapter implements FileUploaderAdapter {
       '..',
       '..',
       '..',
+      '..',
       'uploads',
     );
+
+    if (!existsSync(uploadDir)) {
+      mkdirSync(uploadDir);
+    }
 
     const filePath = join(uploadDir, fileName);
 
     const writeStream = createWriteStream(filePath);
+
+    console.log('> chegou aqui');
 
     return new Promise((resolve) => {
       writeStream.write(file.buffer, (error) => {
@@ -34,9 +41,8 @@ export class InMemoryFileUploaderAdapter implements FileUploaderAdapter {
           }
 
           throw new Error('> Error while trying to save image');
-        } else {
-          resolve();
         }
+        resolve({ fileName });
       });
     });
   }
