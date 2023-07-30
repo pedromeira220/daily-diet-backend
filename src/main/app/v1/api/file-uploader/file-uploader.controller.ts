@@ -51,8 +51,8 @@ export class FileUploaderController {
 
   @Get('get-file/:fileName')
   async getImage(@Param('fileName') fileName: string, @Res() res: Response) {
-    const { filePath } = await this.fileUploaderService.getFile(fileName);
+    const { file } = await this.fileUploaderService.getFile(fileName);
 
-    return res.sendFile(filePath);
+    return res.sendFile(file.path);
   }
 }

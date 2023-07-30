@@ -44,7 +44,7 @@ describe('FileUploaderService', () => {
 
     const { fileName } = await service.upload(File.fromPath(imagePath));
 
-    const uplodDir = join(
+    const uploadDir = join(
       __dirname,
       '..',
       '..',
@@ -55,9 +55,9 @@ describe('FileUploaderService', () => {
       'uploads',
     );
 
-    const uploadedImagePath = join(uplodDir, fileName);
+    const uploadedImagePath = join(uploadDir, fileName);
 
-    const imageExists = existsSync(join(uplodDir, fileName));
+    const imageExists = existsSync(join(uploadDir, fileName));
 
     expect(imageExists).toBeTruthy();
 
