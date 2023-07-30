@@ -1,10 +1,11 @@
+import { File } from '@v1/common/value-objects/file';
 import { randomUUID } from 'node:crypto';
 import { createWriteStream, existsSync, mkdirSync } from 'node:fs';
 import { extname, join } from 'node:path';
 import { FileUploaderAdapter } from '../file-uploader.adpater';
 
 export class InMemoryFileUploaderAdapter implements FileUploaderAdapter {
-  async upload(file: Express.Multer.File): Promise<{ fileName: string }> {
+  async upload(file: File): Promise<{ fileName: string }> {
     const fileId = randomUUID();
     const extension = extname(file.originalname);
 

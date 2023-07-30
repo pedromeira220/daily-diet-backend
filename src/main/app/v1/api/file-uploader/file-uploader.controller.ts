@@ -3,7 +3,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  NotFoundException,
   Param,
   ParseFilePipeBuilder,
   Post,
@@ -15,8 +14,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { File } from '@v1/common/value-objects/file';
 import { Response } from 'express';
-import { existsSync } from 'node:fs';
-import { join } from 'path';
 import { FileUploaderService } from './file-uploader.service';
 
 @ApiTags('file-uploader')
@@ -41,33 +38,20 @@ export class FileUploaderController {
           fileIsRequired: true,
         }),
     )
-    file: File,
+    expressFile: Express.Multer.File,
   ) {
-    console.log('> file', file);
+    console.log('> file', expressFile);
 
-    const { fileName } = await this.fileUploaderService.upload(file);
+    const { fileName } = await this.fileUploaderService.upload(
+      File.fromExpressFile(expressFile),
+    );
 
     return { fileName };
   }
 
   @Get('get-file/:fileName')
   async getImage(@Param('fileName') fileName: string, @Res() res: Response) {
-    const uploadDir = join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      '..',
-      '..',
-      'uploads',
-    );
-
-    const filePath = join(uploadDir, fileName);
-
-    if (!existsSync(filePath)) {
-      throw new NotFoundException('File not found');
-    }
+    const { filePath } = await this.fileUploaderService.getFile(fileName);
 
     return res.sendFile(filePath);
   }
