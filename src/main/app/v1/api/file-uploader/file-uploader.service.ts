@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { File } from '@v1/common/value-objects/file';
+import { Path } from '@v1/common/value-objects/path';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { FileUploaderAdapter } from './adapters/file-uploader.adpater';
@@ -24,12 +25,12 @@ export class FileUploaderService {
       'uploads',
     );
 
-    const filePath = join(uploadDir, fileName);
+    const filePath = new Path(uploadDir, fileName);
 
-    if (!existsSync(filePath)) {
+    if (!existsSync(filePath.toString())) {
       throw new NotFoundException('File not found');
     }
 
-    return { filePath };
+    return { file: File.fromPath(filePath) };
   }
 }
