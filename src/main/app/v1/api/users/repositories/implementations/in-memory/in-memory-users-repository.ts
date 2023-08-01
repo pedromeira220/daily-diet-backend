@@ -31,4 +31,12 @@ export class InMemoryUsersRepository implements UsersRepository {
 
     return userFromArray;
   }
+
+  async save(user: User): Promise<void> {
+    const userIndex = this.users.findIndex(
+      (currentUser) => currentUser.id.toString() == user.id.toString(),
+    );
+
+    this.users[userIndex] = user;
+  }
 }

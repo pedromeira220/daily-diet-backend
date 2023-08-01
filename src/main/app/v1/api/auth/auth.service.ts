@@ -41,6 +41,7 @@ export class AuthService {
       email,
       name,
       password,
+      avatarId: null,
     });
 
     await this.usersRepository.create(user);

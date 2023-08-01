@@ -6,6 +6,7 @@ describe('User entity', () => {
       email: 'email@example.com',
       name: 'john doe',
       password: '12345',
+      avatarId: null,
     });
 
     expect(user.name).toBe('john doe');
@@ -19,6 +20,7 @@ describe('User entity', () => {
       email: 'email@example.com',
       name: 'john doe',
       password,
+      avatarId: null,
     });
 
     const isPasswordCorrectlyHashed = user.isPasswordValid(password);

@@ -8,11 +8,16 @@ export interface UserProps {
   email: string;
   passwordHash: string;
   password?: string;
+  avatarId: UniqueEntityId | null;
 }
 
 export class User extends Entity<UserProps> {
   get name() {
     return this.props.name;
+  }
+
+  set name(value: string) {
+    this.props.name = value;
   }
 
   get email() {
@@ -21,6 +26,14 @@ export class User extends Entity<UserProps> {
 
   get passwordHash() {
     return this.props.passwordHash;
+  }
+
+  get avatarId() {
+    return this.props.avatarId;
+  }
+
+  set avatarId(value: UniqueEntityId | null) {
+    this.props.avatarId = value;
   }
 
   public isPasswordValid(password: string) {

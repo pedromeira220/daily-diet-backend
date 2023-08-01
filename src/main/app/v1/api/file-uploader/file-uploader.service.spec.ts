@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { File } from '@v1/common/value-objects/file';
-import { Path } from '@v1/common/value-objects/path';
-import { existsSync, rmSync } from 'node:fs';
+import { uploadImage } from '@test/utils/upload-image';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { FileUploaderAdapter } from './adapters/file-uploader.adpater';
 import { InMemoryFileUploaderAdapter } from './adapters/implementations/in-memory-file-uploader.adapter';
@@ -39,39 +38,14 @@ describe('FileUploaderService', () => {
   });
 
   it('should be able to upload an image', async () => {
-    const imagePath = new Path(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      '..',
-      '..',
-      'test',
-      'images',
-      'test-image.png',
-    );
+    const { imageSource, uploadDir, removeFromDiscUploadedFile } =
+      await uploadImage(service);
 
-    const { fileName } = await service.upload(File.fromPath(imagePath));
-
-    const uploadDir = join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      '..',
-      '..',
-      'uploads',
-    );
-
-    const uploadedImagePath = join(uploadDir, fileName);
-
-    const imageExists = existsSync(join(uploadDir, fileName));
+    const imageExists = existsSync(join(uploadDir, imageSource.fileName));
 
     expect(imageExists).toBeTruthy();
     expect(repository.itens).toHaveLength(1);
 
-    rmSync(uploadedImagePath);
+    removeFromDiscUploadedFile();
   });
 });

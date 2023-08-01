@@ -9,4 +9,16 @@ export class InMemoryImageSourceRepository implements ImageSourceRepository {
   async create(imageSource: ImageSource): Promise<void> {
     this.itens.push(imageSource);
   }
+
+  async getById(id: string): Promise<ImageSource | null> {
+    const imageSourceFound = this.itens.find(
+      (imageSource) => imageSource.id.toString() == id,
+    );
+
+    if (!imageSourceFound) {
+      return null;
+    }
+
+    return imageSourceFound;
+  }
 }
