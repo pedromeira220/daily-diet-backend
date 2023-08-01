@@ -35,3 +35,11 @@ model Meal {
 
   @@map("meals")
 }
+
+model ImageSource {
+  id        String @id
+  file_name String
+  src       String
+
+  @@map("image_source")
+}

@@ -12,9 +12,13 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
+import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
+import { ResponseDTO } from '@v1/common/dtos/response.dto';
 import { File } from '@v1/common/value-objects/file';
 import { Response } from 'express';
+import { ImageSourceDTO } from './dtos/image-source.dto';
 import { FileUploaderService } from './file-uploader.service';
+import { ImageSourceMapper } from './mappers/image-source.mapper';
 
 @ApiTags('file-uploader')
 @Controller('file-uploader')
@@ -24,6 +28,7 @@ export class FileUploaderController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.CREATED)
+  @ApiResponseDTO(ImageSourceDTO)
   async uploadFile(
     @UploadedFile(
       new ParseFilePipeBuilder()
@@ -39,17 +44,15 @@ export class FileUploaderController {
         }),
     )
     expressFile: Express.Multer.File,
-  ) {
-    console.log('> file', expressFile);
-
-    const { fileName } = await this.fileUploaderService.upload(
+  ): Promise<ResponseDTO<ImageSourceDTO>> {
+    const imageSource = await this.fileUploaderService.upload(
       File.fromExpressFile(expressFile),
     );
 
-    return { fileName };
+    return ImageSourceMapper.toHttp(imageSource);
   }
 
-  @Get('get-file/:fileName')
+  @Get('image/:fileName')
   async getImage(@Param('fileName') fileName: string, @Res() res: Response) {
     const { file } = await this.fileUploaderService.getFile(fileName);
 

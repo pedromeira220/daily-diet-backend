@@ -42,14 +42,16 @@ describe('FileUploaderController (e2e)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('file', imagePath.toString());
 
-    console.log('> response.body', response.body);
+    const fileNameFromResponse = response?.body?.data?.fileName;
 
     expect(response?.status).toBe(201);
-    expect(typeof response?.body?.fileName).toBe('string');
+    expect(typeof fileNameFromResponse).toBe('string');
+    expect(typeof response?.body?.data?.id).toBe('string');
 
-    const uploadedImagePath = join(uploadDir, response?.body?.fileName);
+    const uploadedImagePath = join(uploadDir, fileNameFromResponse);
 
     expect(existsSync(uploadedImagePath)).toBeTruthy();
+    expect(await prisma.imageSource.count()).toBe(1);
 
     rmSync(uploadedImagePath);
   });

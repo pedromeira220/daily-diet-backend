@@ -6,9 +6,12 @@ import { join } from 'node:path';
 import { FileUploaderAdapter } from './adapters/file-uploader.adpater';
 import { InMemoryFileUploaderAdapter } from './adapters/implementations/in-memory-file-uploader.adapter';
 import { FileUploaderService } from './file-uploader.service';
+import { ImageSourceRepository } from './repositories/image-source.repository';
+import { InMemoryImageSourceRepository } from './repositories/implementations/in-memory-image-source-repository';
 
 describe('FileUploaderService', () => {
   let service: FileUploaderService;
+  let repository: InMemoryImageSourceRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,10 +21,17 @@ describe('FileUploaderService', () => {
           provide: FileUploaderAdapter,
           useClass: InMemoryFileUploaderAdapter,
         },
+        {
+          provide: ImageSourceRepository,
+          useClass: InMemoryImageSourceRepository,
+        },
       ],
     }).compile();
 
     service = module.get<FileUploaderService>(FileUploaderService);
+    repository = module.get<InMemoryImageSourceRepository>(
+      ImageSourceRepository,
+    );
   });
 
   it('should be defined', () => {
@@ -60,6 +70,7 @@ describe('FileUploaderService', () => {
     const imageExists = existsSync(join(uploadDir, fileName));
 
     expect(imageExists).toBeTruthy();
+    expect(repository.itens).toHaveLength(1);
 
     rmSync(uploadedImagePath);
   });
