@@ -41,10 +41,15 @@ export class UsersService {
       }
     }
 
+    console.log('> previous name', userFound.name);
+    console.log('>  name from params', name);
+
     if (typeof name != 'undefined') userFound.name = name;
     if (typeof avatar != 'undefined')
       userFound.avatarId =
         avatar == null ? null : new UniqueEntityId(avatar.id.toString());
+
+    console.log('>  name after update', name);
 
     await this.userRepository.save(userFound);
 

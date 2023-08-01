@@ -106,8 +106,6 @@ export class File implements FileProps {
         buffer: fileBuffer,
       };
 
-      console.log('> fileProps', fileProps);
-
       return new File(fileProps);
     } catch (error) {
       console.error('> Error reading file:', error);

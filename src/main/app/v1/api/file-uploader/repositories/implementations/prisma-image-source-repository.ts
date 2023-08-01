@@ -13,4 +13,18 @@ export class PrismaImageSourceRepository implements ImageSourceRepository {
       data: ImageSourceMapper.toPrisma(imageSource),
     });
   }
+
+  async getById(id: string): Promise<ImageSource | null> {
+    const imageSourceFound = await this.prisma.imageSource.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!imageSourceFound) {
+      return null;
+    }
+
+    return ImageSourceMapper.fromPrismaToDomain(imageSourceFound);
+  }
 }

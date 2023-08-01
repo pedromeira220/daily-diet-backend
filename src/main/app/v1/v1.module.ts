@@ -18,7 +18,6 @@ import { DatabaseModule } from './database/database.module';
     MealsModule,
     DatabaseModule,
     FileUploaderModule,
-    // ImagesModule,
   ],
   controllers: [],
   providers: [

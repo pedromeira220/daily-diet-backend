@@ -1,6 +1,13 @@
 import { IsEmail, IsString, IsUUID } from 'class-validator';
 
-export class UserDTO {
+interface UserDTOProps {
+  id: string;
+  name: string;
+  email: string;
+  avatarId: string | null;
+}
+
+export class UserDTO implements UserDTOProps {
   @IsUUID()
   id: string;
 
@@ -11,9 +18,13 @@ export class UserDTO {
   @IsEmail()
   email: string;
 
-  constructor(id: string, name: string, email: string) {
+  @IsUUID()
+  avatarId: string | null;
+
+  constructor({ avatarId, email, id, name }: UserDTOProps) {
     this.id = id;
     this.email = email;
     this.name = name;
+    this.avatarId = avatarId;
   }
 }

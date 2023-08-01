@@ -10,7 +10,12 @@ export class UserMapper {
   }
 
   static toDTO(user: User): UserDTO {
-    return new UserDTO(user.id.toValue(), user.name, user.email);
+    return new UserDTO({
+      name: user.name,
+      avatarId: !!user.avatarId ? user.avatarId.toString() : null,
+      email: user.email,
+      id: user.id.toString(),
+    });
   }
 
   static toDomain(raw: UserRaw): User {
@@ -19,6 +24,7 @@ export class UserMapper {
         name: raw.name,
         email: raw.email,
         passwordHash: raw.password_hash,
+        avatarId: !!raw.avatar_id ? new UniqueEntityId(raw.avatar_id) : null,
       },
       new UniqueEntityId(raw.id),
     );
@@ -30,6 +36,7 @@ export class UserMapper {
       id: user.id.toString(),
       name: user.name,
       password_hash: user.passwordHash,
+      avatar_id: !!user.avatarId ? user.avatarId.toString() : null,
     };
   }
 }

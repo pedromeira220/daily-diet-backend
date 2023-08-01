@@ -32,8 +32,6 @@ export class InMemoryFileUploaderAdapter implements FileUploaderAdapter {
 
     const writeStream = createWriteStream(filePath);
 
-    console.log('> chegou aqui');
-
     return new Promise((resolve) => {
       writeStream.write(file.buffer, (error) => {
         if (error) {
