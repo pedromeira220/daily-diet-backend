@@ -1,4 +1,4 @@
-import { CreateImageSourceDTO } from '@v1/api/file-uploader/dtos/create-image-source.dto';
+import { UploadImageSourceDTO } from '@v1/api/file-uploader/dtos/upload-image-source.dto';
 import {
   IsOptional,
   IsString,
@@ -14,5 +14,5 @@ export class UpdateApplicationUserDTO {
 
   @ValidateNested()
   @IsOptional()
-  avatar?: CreateImageSourceDTO;
+  avatar?: UploadImageSourceDTO;
 }

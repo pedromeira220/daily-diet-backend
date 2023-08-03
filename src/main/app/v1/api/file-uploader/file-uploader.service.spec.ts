@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Origin } from '@prisma/client';
 import { uploadImage } from '@test/utils/upload-image';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -45,6 +46,7 @@ describe('FileUploaderService', () => {
 
     expect(imageExists).toBeTruthy();
     expect(repository.itens).toHaveLength(1);
+    expect(imageSource.origin).toBe(Origin.LOCAL);
 
     removeFromDiscUploadedFile();
   });

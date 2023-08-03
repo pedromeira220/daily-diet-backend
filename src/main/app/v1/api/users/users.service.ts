@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { ImageSource } from '../file-uploader/entities/image-source.entity';
 import { ImageSourceRepository } from '../file-uploader/repositories/image-source.repository';
 import { ApplicationUser } from './entities/application-user.entity';
@@ -55,8 +54,7 @@ export class UsersService {
 
     if (typeof name != 'undefined') userFound.name = name;
     if (typeof avatar != 'undefined')
-      userFound.avatarId =
-        avatar == null ? null : new UniqueEntityId(avatar.id.toString());
+      userFound.avatarId = avatar == null ? null : avatar.id;
 
     console.log('>  name after update', name);
 

@@ -42,7 +42,13 @@ model ImageSource {
   id        String @id
   file_name String
   src       String
+  origin    Origin
   User      User[]
 
   @@map("image_source")
+}
+
+enum Origin {
+  LOCAL
+  AWS_S3
 }

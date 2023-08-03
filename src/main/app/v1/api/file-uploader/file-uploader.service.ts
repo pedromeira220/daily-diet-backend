@@ -15,15 +15,11 @@ export class FileUploaderService {
   ) {}
 
   async upload(file: File): Promise<ImageSource> {
-    const { fileName } = await this.fileUploaderAdapter.upload(file);
+    const uploadedImage = await this.fileUploaderAdapter.upload(file);
 
-    const imageSource = ImageSource.create({
-      fileName,
-    });
+    await this.imageSourceRepository.create(uploadedImage);
 
-    await this.imageSourceRepository.create(imageSource);
-
-    return imageSource;
+    return uploadedImage;
   }
 
   async getFile(fileName: string) {

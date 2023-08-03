@@ -2,10 +2,11 @@ import { File } from '@v1/common/value-objects/file';
 import { randomUUID } from 'node:crypto';
 import { createWriteStream, existsSync, mkdirSync } from 'node:fs';
 import { extname, join } from 'node:path';
+import { ImageSource, Origin } from '../../entities/image-source.entity';
 import { FileUploaderAdapter } from '../file-uploader.adpater';
 
 export class InMemoryFileUploaderAdapter implements FileUploaderAdapter {
-  async upload(file: File): Promise<{ fileName: string }> {
+  async upload(file: File): Promise<ImageSource> {
     const fileId = randomUUID();
     const extension = extname(file.originalname);
 
@@ -41,7 +42,12 @@ export class InMemoryFileUploaderAdapter implements FileUploaderAdapter {
 
           throw new Error('> Error while trying to save image');
         }
-        resolve({ fileName });
+        resolve(
+          ImageSource.create({
+            fileName,
+            origin: Origin.LOCAL,
+          }),
+        );
       });
     });
   }
