@@ -1,5 +1,6 @@
 import { Entity } from '@v1/common/entities/entity.entity';
-import { compareSync } from 'bcryptjs';
+import { Optional } from '@v1/common/logic/optional';
+import { compareSync, hashSync } from 'bcryptjs';
 
 export interface UserProps {
   name: string;
@@ -27,5 +28,14 @@ export abstract class User<Props extends UserProps> extends Entity<Props> {
 
   public isPasswordValid(password: string) {
     return compareSync(password, this.passwordHash);
+  }
+
+  static makeProps<Props extends UserProps>(
+    props: Optional<Props, 'passwordHash'>,
+  ) {
+    return {
+      ...props,
+      passwordHash: props.passwordHash ?? hashSync(props.password ?? '', 6),
+    };
   }
 }

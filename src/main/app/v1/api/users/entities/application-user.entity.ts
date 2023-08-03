@@ -1,6 +1,5 @@
 import { Optional } from '@v1/common/logic/optional';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
-import { hashSync } from 'bcryptjs';
 import { User, UserProps } from './user.entity';
 
 export interface ApplicationUserProps extends UserProps {
@@ -20,14 +19,13 @@ export class ApplicationUser extends User<ApplicationUserProps> {
     props: Optional<ApplicationUserProps, 'passwordHash'>,
     id?: UniqueEntityId,
   ) {
-    const user = new ApplicationUser(
-      {
+    const applicationUser = new ApplicationUser(
+      User.makeProps<ApplicationUserProps>({
         ...props,
-        passwordHash: props.passwordHash ?? hashSync(props.password ?? '', 6),
-      },
+      }),
       id,
     );
 
-    return user;
+    return applicationUser;
   }
 }

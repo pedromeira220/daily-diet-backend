@@ -1,10 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { ApplicationUser } from '@v1/api/users/entities/application-user.entity';
-import { UserProps } from '@v1/api/users/entities/user.entity';
+import {
+  ApplicationUser,
+  ApplicationUserProps,
+} from '@v1/api/users/entities/application-user.entity';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 
 export function makeApplicationUser(
-  override: Partial<UserProps> = {},
+  override: Partial<ApplicationUserProps> = {},
   id?: UniqueEntityId,
 ) {
   const meal = ApplicationUser.create(

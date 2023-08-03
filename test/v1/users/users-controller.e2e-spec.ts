@@ -68,6 +68,19 @@ describe('UsersController (e2e)', () => {
     removeFromDiscUploadedFile();
   });
 
+  it('/users/profile/me (GET)', async () => {
+    const { accessToken, previousCreatedUser } =
+      await createAndAuthenticateUser(app, prisma);
+
+    const response = await request(app.getHttpServer())
+      .get('/users/profile/me')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.id).toBe(previousCreatedUser.id.toString());
+    expect(response.body.data.avatar).toBe(null);
+  });
+
   beforeEach(async () => {
     await app.close();
   });

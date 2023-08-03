@@ -8,6 +8,7 @@ import { InMemoryFileUploaderAdapter } from '../file-uploader/adapters/implement
 import { FileUploaderService } from '../file-uploader/file-uploader.service';
 import { ImageSourceRepository } from '../file-uploader/repositories/image-source.repository';
 import { InMemoryImageSourceRepository } from '../file-uploader/repositories/implementations/in-memory-image-source-repository';
+import { Profile } from './entities/profile.entity';
 import { InMemoryUsersRepository } from './repositories/implementations/in-memory/in-memory-users-repository';
 import { UsersRepository } from './repositories/users-repository';
 import { UsersService } from './users.service';
@@ -86,6 +87,33 @@ describe('UsersService', () => {
     expect(userFound).toBeDefined();
     expect(userFound.id.toString()).toBe(userId.toString());
     expect(userFound.name).toBe('Updated name');
+
+    removeFromDiscUploadedFile();
+  });
+
+  it('should be able to get an user profile', async () => {
+    const { imageSource, removeFromDiscUploadedFile } = await uploadImage(
+      fileUploaderService,
+    );
+
+    const userId = new UniqueEntityId();
+
+    const previousCreatedUser = makeApplicationUser(
+      {
+        avatarId: imageSource.id,
+      },
+      userId,
+    );
+
+    repository.users.push(previousCreatedUser);
+
+    const userProfile = await service.getProfile({
+      userId: userId.toString(),
+    });
+
+    expect(userProfile).toBeInstanceOf(Profile);
+    expect(userProfile.id.toString()).toBe(userId.toString());
+    expect(userProfile?.avatar?.src).toBe(imageSource.src);
 
     removeFromDiscUploadedFile();
   });

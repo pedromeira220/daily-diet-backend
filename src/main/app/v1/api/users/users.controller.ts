@@ -13,7 +13,9 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AuthUser } from '../auth/models/auth-user.model';
 import { ImageSourceMapper } from '../file-uploader/mappers/image-source.mapper';
 import { ApplicationUserDTO } from './dtos/application-user.dto';
+import { ProfileDTO } from './dtos/profile.dto';
 import { UpdateApplicationUserDTO } from './dtos/update-application-user.dto';
+import { ProfileMapper } from './mappers/profile.mapper';
 import { UserMapper } from './mappers/user.mapper';
 import { UsersService } from './users.service';
 
@@ -60,5 +62,17 @@ export class UsersController {
     });
 
     return UserMapper.toHttp(updatedUser);
+  }
+
+  @Get('profile/me')
+  @ApiResponseDTO(ProfileDTO)
+  async getProfile(
+    @CurrentUser() currentUser: AuthUser,
+  ): Promise<ResponseDTO<ProfileDTO>> {
+    const profile = await this.usersService.getProfile({
+      userId: currentUser.userId,
+    });
+
+    return ProfileMapper.toHttp(profile);
   }
 }
