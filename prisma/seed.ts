@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { makeApplicationUser } from '@test/factories/make-application-user';
 import { makeMeal } from '@test/factories/make-meal';
-import { makeUser } from '@test/factories/make-user';
 import { MealMapper } from '@v1/api/meals/mappers/meal.mapper';
 import { UserMapper } from '@v1/api/users/mappers/user.mapper';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
@@ -21,7 +21,7 @@ const createUsers = async () => {
   const usersToCreate = Array.from({ length: COUNT_OF_USERS_TO_CREATE }).map(
     (_, index) => {
       if (index == 0) {
-        const userToCreate = makeUser({
+        const userToCreate = makeApplicationUser({
           email: index == 0 ? 'admin@admin.com' : undefined,
           name: index == 0 ? 'Admin' : undefined,
           password: index == 0 ? 'admin123' : undefined,
@@ -31,7 +31,7 @@ const createUsers = async () => {
         return UserMapper.toPrisma(userToCreate);
       }
 
-      const userToCreate = makeUser();
+      const userToCreate = makeApplicationUser();
 
       userIdList.push(userToCreate.id);
       return UserMapper.toPrisma(userToCreate);

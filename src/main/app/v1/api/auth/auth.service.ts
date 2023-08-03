@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../users/entities/user.entity';
+import { ApplicationUser } from '../users/entities/application-user.entity';
 import { UsersRepository } from '../users/repositories/users-repository';
 import { InvalidPasswordOrEmailError } from './errors/invalid-password-or-email.error';
 import { AuthUser } from './models/auth-user.model';
@@ -28,7 +28,7 @@ export class AuthService {
     email,
     name,
     password,
-  }: RegisterUserRequest): Promise<User> {
+  }: RegisterUserRequest): Promise<ApplicationUser> {
     const checkIfEmailIsAlreadyInUse = await this.usersRepository.getByEmail(
       email,
     );
@@ -37,7 +37,7 @@ export class AuthService {
       throw new BadRequestException('Email já está em uso');
     }
 
-    const user = User.create({
+    const user = ApplicationUser.create({
       email,
       name,
       password,

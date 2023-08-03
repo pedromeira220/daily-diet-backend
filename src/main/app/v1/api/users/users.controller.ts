@@ -12,8 +12,8 @@ import { ResponseDTO } from '@v1/common/dtos/response.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AuthUser } from '../auth/models/auth-user.model';
 import { ImageSourceMapper } from '../file-uploader/mappers/image-source.mapper';
-import { UpdateUserDTO } from './dtos/update-user.dto';
-import { UserDTO } from './dtos/user.dto';
+import { ApplicationUserDTO } from './dtos/application-user.dto';
+import { UpdateApplicationUserDTO } from './dtos/update-application-user.dto';
 import { UserMapper } from './mappers/user.mapper';
 import { UsersService } from './users.service';
 
@@ -26,31 +26,31 @@ export class UsersController {
    * Busca os dados de um usuário pelo id
    */
   @Get(':id')
-  @ApiResponseDTO(UserDTO)
+  @ApiResponseDTO(ApplicationUserDTO)
   async getById(
     @Param('id', new ParseUUIDPipe()) userId: string,
-  ): Promise<ResponseDTO<UserDTO>> {
+  ): Promise<ResponseDTO<ApplicationUserDTO>> {
     const userFound = await this.usersService.getById(userId);
 
     return UserMapper.toHttp(userFound);
   }
 
   @Get('/')
-  @ApiResponseDTO(UserDTO)
+  @ApiResponseDTO(ApplicationUserDTO)
   async getLoggedUser(
     @CurrentUser() currentUser: AuthUser,
-  ): Promise<ResponseDTO<UserDTO>> {
+  ): Promise<ResponseDTO<ApplicationUserDTO>> {
     const userFound = await this.usersService.getById(currentUser.userId);
 
     return UserMapper.toHttp(userFound);
   }
 
   @Put('/')
-  @ApiResponseDTO(UserDTO)
+  @ApiResponseDTO(ApplicationUserDTO)
   async update(
     @CurrentUser() currentUser: AuthUser,
-    @Body() dto: UpdateUserDTO,
-  ): Promise<ResponseDTO<UserDTO>> {
+    @Body() dto: UpdateApplicationUserDTO,
+  ): Promise<ResponseDTO<ApplicationUserDTO>> {
     const updatedUser = await this.usersService.updateById({
       userId: currentUser.userId,
       avatar: !!dto.avatar

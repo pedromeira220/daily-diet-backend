@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class UpdateUserDTO {
+export class UpdateApplicationUserDTO {
   @IsString()
   @IsOptional()
   @MaxLength(50)

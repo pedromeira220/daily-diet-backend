@@ -1,6 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { makeUser } from '@test/factories/make-user';
+import { makeApplicationUser } from '@test/factories/make-application-user';
 import { uploadImage } from '@test/utils/upload-image';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { FileUploaderAdapter } from '../file-uploader/adapters/file-uploader.adpater';
@@ -50,7 +50,7 @@ describe('UsersService', () => {
   it('should be able to get an user by id', async () => {
     const userId = new UniqueEntityId();
 
-    const previousCreatedUser = makeUser({}, userId);
+    const previousCreatedUser = makeApplicationUser({}, userId);
 
     repository.users.push(previousCreatedUser);
 
@@ -69,7 +69,7 @@ describe('UsersService', () => {
   it('should be able to update an user', async () => {
     const userId = new UniqueEntityId();
 
-    const previousCreatedUser = makeUser({}, userId);
+    const previousCreatedUser = makeApplicationUser({}, userId);
 
     repository.users.push(previousCreatedUser);
 

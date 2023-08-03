@@ -2,13 +2,17 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { ImageSource } from '../file-uploader/entities/image-source.entity';
 import { ImageSourceRepository } from '../file-uploader/repositories/image-source.repository';
-import { User } from './entities/user.entity';
+import { ApplicationUser } from './entities/application-user.entity';
 import { UsersRepository } from './repositories/users-repository';
 
 interface UpdateById {
   userId: string;
   name?: string;
   avatar?: ImageSource | null;
+}
+
+interface GetProfileRequest {
+  userId: string;
 }
 
 @Injectable()
@@ -28,7 +32,11 @@ export class UsersService {
     return userFound;
   }
 
-  async updateById({ userId, name, avatar }: UpdateById): Promise<User> {
+  async updateById({
+    userId,
+    name,
+    avatar,
+  }: UpdateById): Promise<ApplicationUser> {
     const userFound = await this.getById(userId);
 
     if (avatar != null && avatar != undefined) {

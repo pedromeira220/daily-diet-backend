@@ -1,16 +1,16 @@
 import { User as UserRaw } from '@prisma/client';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
-import { UserDTO } from '../dtos/user.dto';
-import { User } from '../entities/user.entity';
+import { ApplicationUserDTO } from '../dtos/application-user.dto';
+import { ApplicationUser } from '../entities/application-user.entity';
 
 export class UserMapper {
-  static toHttp(user: User): ResponseDTO<UserDTO> {
+  static toHttp(user: ApplicationUser): ResponseDTO<ApplicationUserDTO> {
     return new ResponseDTO({ data: this.toDTO(user) });
   }
 
-  static toDTO(user: User): UserDTO {
-    return new UserDTO({
+  static toDTO(user: ApplicationUser): ApplicationUserDTO {
+    return new ApplicationUserDTO({
       name: user.name,
       avatarId: !!user.avatarId ? user.avatarId.toString() : null,
       email: user.email,
@@ -18,8 +18,8 @@ export class UserMapper {
     });
   }
 
-  static toDomain(raw: UserRaw): User {
-    return User.create(
+  static toDomain(raw: UserRaw): ApplicationUser {
+    return ApplicationUser.create(
       {
         name: raw.name,
         email: raw.email,
@@ -30,7 +30,7 @@ export class UserMapper {
     );
   }
 
-  static toPrisma(user: User): UserRaw {
+  static toPrisma(user: ApplicationUser): UserRaw {
     return {
       email: user.email,
       id: user.id.toString(),

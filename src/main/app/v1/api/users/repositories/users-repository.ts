@@ -1,8 +1,8 @@
-import { User } from '../entities/user.entity';
+import { ApplicationUser } from '../entities/application-user.entity';
 
 export abstract class UsersRepository {
-  abstract getById(userId: string): Promise<User | null>;
-  abstract getByEmail(userEmail: string): Promise<User | null>;
-  abstract create(user: User): Promise<void>;
-  abstract save(user: User): Promise<void>;
+  abstract getById(userId: string): Promise<ApplicationUser | null>;
+  abstract getByEmail(userEmail: string): Promise<ApplicationUser | null>;
+  abstract create(user: ApplicationUser): Promise<void>;
+  abstract save(user: ApplicationUser): Promise<void>;
 }

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@v1/api/users/entities/user.entity';
+import { ApplicationUser } from '@v1/api/users/entities/application-user.entity';
 import { UsersRepository } from '../../users-repository';
 
 @Injectable()
 export class InMemoryUsersRepository implements UsersRepository {
-  public users: User[] = [];
+  public users: ApplicationUser[] = [];
 
-  async getById(userId: string): Promise<User | null> {
+  async getById(userId: string): Promise<ApplicationUser | null> {
     const userFromArray = this.users.find(
       (user) => user.id.toValue() == userId,
     );
@@ -18,11 +18,11 @@ export class InMemoryUsersRepository implements UsersRepository {
     return userFromArray;
   }
 
-  async create(user: User): Promise<void> {
+  async create(user: ApplicationUser): Promise<void> {
     this.users.push(user);
   }
 
-  async getByEmail(userEmail: string): Promise<User | null> {
+  async getByEmail(userEmail: string): Promise<ApplicationUser | null> {
     const userFromArray = this.users.find((user) => user.email == userEmail);
 
     if (!userFromArray) {
@@ -32,7 +32,7 @@ export class InMemoryUsersRepository implements UsersRepository {
     return userFromArray;
   }
 
-  async save(user: User): Promise<void> {
+  async save(user: ApplicationUser): Promise<void> {
     const userIndex = this.users.findIndex(
       (currentUser) => currentUser.id.toString() == user.id.toString(),
     );
