@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { makeApplicationUser } from '@test/factories/make-application-user';
-import { uploadImage } from '@test/utils/upload-image';
+import { uploadImageLocally } from '@test/utils/upload-image-locally';
 import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { FileUploaderAdapter } from '../file-uploader/adapters/file-uploader.adpater';
 import { InMemoryFileUploaderAdapter } from '../file-uploader/adapters/implementations/in-memory-file-uploader.adapter';
@@ -74,9 +74,8 @@ describe('UsersService', () => {
 
     repository.users.push(previousCreatedUser);
 
-    const { imageSource, removeFromDiscUploadedFile } = await uploadImage(
-      fileUploaderService,
-    );
+    const { imageSource, removeFromDiscUploadedFile } =
+      await uploadImageLocally(fileUploaderService);
 
     const userFound = await service.updateById({
       userId: userId.toString(),
@@ -92,9 +91,8 @@ describe('UsersService', () => {
   });
 
   it('should be able to get an user profile', async () => {
-    const { imageSource, removeFromDiscUploadedFile } = await uploadImage(
-      fileUploaderService,
-    );
+    const { imageSource, removeFromDiscUploadedFile } =
+      await uploadImageLocally(fileUploaderService);
 
     const userId = new UniqueEntityId();
 

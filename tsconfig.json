@@ -20,7 +20,8 @@
     "paths": {
       "@v1/*": ["./src/main/app/v1/*"],
       "@test/*": ["./test/*"],
-      "@core/*": ["./src/main/app/core/*"]
+      "@core/*": ["./src/main/app/core/*"],
+      "@/*": ["./src/*"]
     },
     "moduleResolution": "node"
   }

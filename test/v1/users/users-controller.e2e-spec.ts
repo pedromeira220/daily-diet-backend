@@ -1,10 +1,10 @@
+import { AppModule } from '@/main/app/app.module';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createAndAuthenticateUser } from '@test/utils/create-and-authenticate-user';
 import { uploadImage } from '@test/utils/upload-image';
 import { FileUploaderService } from '@v1/api/file-uploader/file-uploader.service';
 import { PrismaService } from '@v1/database/prisma/prisma.service';
-import { V1Module } from '@v1/v1.module';
 import * as request from 'supertest';
 
 describe('UsersController (e2e)', () => {
@@ -14,7 +14,7 @@ describe('UsersController (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [V1Module],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -39,9 +39,7 @@ describe('UsersController (e2e)', () => {
     const { accessToken, previousCreatedUser } =
       await createAndAuthenticateUser(app, prisma);
 
-    const { imageSource, removeFromDiscUploadedFile } = await uploadImage(
-      fileUploaderService,
-    );
+    const { imageSource } = await uploadImage(fileUploaderService);
 
     const response = await request(app.getHttpServer())
       .put(`/users`)
@@ -64,8 +62,6 @@ describe('UsersController (e2e)', () => {
     });
 
     expect(userFromDb?.avatar_id).toBe(imageSource.id.toString());
-
-    removeFromDiscUploadedFile();
   });
 
   it('/users/profile/me (GET)', async () => {

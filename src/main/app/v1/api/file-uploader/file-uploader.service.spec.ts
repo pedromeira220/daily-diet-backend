@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Origin } from '@prisma/client';
-import { uploadImage } from '@test/utils/upload-image';
+import { uploadImageLocally } from '@test/utils/upload-image-locally';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { FileUploaderAdapter } from './adapters/file-uploader.adpater';
@@ -40,7 +40,7 @@ describe('FileUploaderService', () => {
 
   it('should be able to upload an image', async () => {
     const { imageSource, uploadDir, removeFromDiscUploadedFile } =
-      await uploadImage(service);
+      await uploadImageLocally(service);
 
     const imageExists = existsSync(join(uploadDir, imageSource.fileName));
 

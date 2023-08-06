@@ -1,10 +1,10 @@
+import { AppModule } from '@/main/app/app.module';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { makeMeal } from '@test/factories/make-meal';
 import { createAndAuthenticateUser } from '@test/utils/create-and-authenticate-user';
 import { MealMapper } from '@v1/api/meals/mappers/meal.mapper';
 import { PrismaService } from '@v1/database/prisma/prisma.service';
-import { V1Module } from '@v1/v1.module';
 import { addDays } from 'date-fns';
 import * as request from 'supertest';
 
@@ -14,7 +14,7 @@ describe('MealsController (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [V1Module],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
