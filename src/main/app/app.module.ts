@@ -16,5 +16,6 @@ import { validate } from './core/config/env.validation';
   ],
   controllers: [],
   providers: [],
+  exports: [AppConfigModule],
 })
 export class AppModule {}
