@@ -12,11 +12,13 @@ datasource db {
 }
 
 model User {
-  id            String @id
+  id            String       @id
   name          String
-  email         String @unique
+  email         String       @unique
   password_hash String
   meal          Meal[]
+  avatar        ImageSource? @relation(fields: [avatar_id], references: [id])
+  avatar_id     String?
 
   @@map("users")
 }
@@ -34,4 +36,19 @@ model Meal {
   user User @relation(fields: [user_id], references: [id])
 
   @@map("meals")
+}
+
+model ImageSource {
+  id        String @id
+  file_name String
+  src       String
+  origin    Origin
+  User      User[]
+
+  @@map("image_source")
+}
+
+enum Origin {
+  LOCAL
+  AWS_S3
 }

@@ -1,10 +1,21 @@
-import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Put,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AuthUser } from '../auth/models/auth-user.model';
-import { UserDTO } from './dtos/user.dto';
+import { ImageSourceMapper } from '../file-uploader/mappers/image-source.mapper';
+import { ApplicationUserDTO } from './dtos/application-user.dto';
+import { ProfileDTO } from './dtos/profile.dto';
+import { UpdateApplicationUserDTO } from './dtos/update-application-user.dto';
+import { ProfileMapper } from './mappers/profile.mapper';
 import { UserMapper } from './mappers/user.mapper';
 import { UsersService } from './users.service';
 
@@ -17,21 +28,51 @@ export class UsersController {
    * Busca os dados de um usuário pelo id
    */
   @Get(':id')
-  @ApiResponseDTO(UserDTO)
+  @ApiResponseDTO(ApplicationUserDTO)
   async getById(
     @Param('id', new ParseUUIDPipe()) userId: string,
-  ): Promise<ResponseDTO<UserDTO>> {
+  ): Promise<ResponseDTO<ApplicationUserDTO>> {
     const userFound = await this.usersService.getById(userId);
 
     return UserMapper.toHttp(userFound);
   }
 
   @Get('/')
+  @ApiResponseDTO(ApplicationUserDTO)
   async getLoggedUser(
     @CurrentUser() currentUser: AuthUser,
-  ): Promise<ResponseDTO<UserDTO>> {
+  ): Promise<ResponseDTO<ApplicationUserDTO>> {
     const userFound = await this.usersService.getById(currentUser.userId);
 
     return UserMapper.toHttp(userFound);
+  }
+
+  @Put('/')
+  @ApiResponseDTO(ApplicationUserDTO)
+  async update(
+    @CurrentUser() currentUser: AuthUser,
+    @Body() dto: UpdateApplicationUserDTO,
+  ): Promise<ResponseDTO<ApplicationUserDTO>> {
+    const updatedUser = await this.usersService.updateById({
+      userId: currentUser.userId,
+      avatar: !!dto.avatar
+        ? ImageSourceMapper.fromDTOToDomain(dto.avatar)
+        : null,
+      name: dto.name,
+    });
+
+    return UserMapper.toHttp(updatedUser);
+  }
+
+  @Get('profile/me')
+  @ApiResponseDTO(ProfileDTO)
+  async getProfile(
+    @CurrentUser() currentUser: AuthUser,
+  ): Promise<ResponseDTO<ProfileDTO>> {
+    const profile = await this.usersService.getProfile({
+      userId: currentUser.userId,
+    });
+
+    return ProfileMapper.toHttp(profile);
   }
 }

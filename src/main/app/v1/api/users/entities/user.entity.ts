@@ -1,6 +1,5 @@
 import { Entity } from '@v1/common/entities/entity.entity';
 import { Optional } from '@v1/common/logic/optional';
-import { UniqueEntityId } from '@v1/common/value-objects/unique-entity-id';
 import { compareSync, hashSync } from 'bcryptjs';
 
 export interface UserProps {
@@ -10,9 +9,13 @@ export interface UserProps {
   password?: string;
 }
 
-export class User extends Entity<UserProps> {
+export abstract class User<Props extends UserProps> extends Entity<Props> {
   get name() {
     return this.props.name;
+  }
+
+  set name(value: string) {
+    this.props.name = value;
   }
 
   get email() {
@@ -27,18 +30,12 @@ export class User extends Entity<UserProps> {
     return compareSync(password, this.passwordHash);
   }
 
-  static create(
-    props: Optional<UserProps, 'passwordHash'>,
-    id?: UniqueEntityId,
+  static makeProps<Props extends UserProps>(
+    props: Optional<Props, 'passwordHash'>,
   ) {
-    const user = new User(
-      {
-        ...props,
-        passwordHash: props.passwordHash ?? hashSync(props.password ?? '', 6),
-      },
-      id,
-    );
-
-    return user;
+    return {
+      ...props,
+      passwordHash: props.passwordHash ?? hashSync(props.password ?? '', 6),
+    };
   }
 }

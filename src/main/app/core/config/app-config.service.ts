@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Global, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NodeEnvironment } from './env.validation';
 
+@Global()
 @Injectable()
 export class EnvConfigService {
   constructor(private readonly configService: ConfigService) {}
@@ -28,5 +29,17 @@ export class EnvConfigService {
 
   get isProvisionEnvironment(): boolean {
     return this.NODE_ENV === NodeEnvironment.Provision;
+  }
+
+  get AWS_S3_BUCKET(): string {
+    return this.configService.get('AWS_S3_BUCKET') as string;
+  }
+
+  get AWS_ACCESS_KEY_ID(): string {
+    return this.configService.get('AWS_ACCESS_KEY_ID') as string;
+  }
+
+  get AWS_SECRET_ACCESS_KEY(): string {
+    return this.configService.get('AWS_SECRET_ACCESS_KEY') as string;
   }
 }

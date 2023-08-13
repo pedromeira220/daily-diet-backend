@@ -5,12 +5,20 @@ import { AuthModule } from '@v1/api/auth/auth.module';
 import { AllExceptionFilter } from '@v1/common/filters/all-exception.filter';
 
 import { JwtAuthGuard } from './api/auth/guards/jwt-auth.guard';
+import { FileUploaderModule } from './api/file-uploader/file-uploader.module';
+// import { ImagesModule } from './api/images/images.module';
 import { MealsModule } from './api/meals/meals.module';
 import { UsersModule } from './api/users/users.module';
 import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, MealsModule, DatabaseModule],
+  imports: [
+    UsersModule,
+    AuthModule,
+    MealsModule,
+    DatabaseModule,
+    FileUploaderModule,
+  ],
   controllers: [],
   providers: [
     {

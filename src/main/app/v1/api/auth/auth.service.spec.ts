@@ -2,8 +2,8 @@ import { BadRequestException } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
+import { makeApplicationUser } from '@test/factories/make-application-user';
 import { loadEnvVariables } from '@test/utils/load-env-variables';
-import { User } from '../users/entities/user.entity';
 import { InMemoryUsersRepository } from '../users/repositories/implementations/in-memory/in-memory-users-repository';
 import { UsersRepository } from '../users/repositories/users-repository';
 import { AuthService } from './auth.service';
@@ -61,7 +61,7 @@ describe('AuthService', () => {
   it('should not be able to register an user with a already in use email', async () => {
     const alreadyInUseEmail = 'john@example.com';
 
-    const previousRegisteredUser = User.create({
+    const previousRegisteredUser = makeApplicationUser({
       email: alreadyInUseEmail,
       name: 'John Doe',
       password: '12345',

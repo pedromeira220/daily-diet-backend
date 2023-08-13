@@ -9,7 +9,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
-import { UserDTO } from '../users/dtos/user.dto';
+import { ApplicationUserDTO } from '../users/dtos/application-user.dto';
 import { UserMapper } from '../users/mappers/user.mapper';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -30,10 +30,10 @@ export class AuthController {
    */
   @Public()
   @Post('/register')
-  @ApiResponseDTO(UserDTO)
+  @ApiResponseDTO(ApplicationUserDTO)
   async register(
     @Body() register: RegisterRequestDTO,
-  ): Promise<ResponseDTO<UserDTO>> {
+  ): Promise<ResponseDTO<ApplicationUserDTO>> {
     const registeredUser = await this.authService.registerUser({
       email: register.email,
       name: register.name,

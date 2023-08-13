@@ -101,20 +101,10 @@ export class InMemoryMealsRepository implements MealsRepository {
       (meal) => meal.userId.toString() == userId,
     );
 
-    console.log('> mealsFromUser', mealsFromUser.length);
-
-    console.log('> pageable', pageable);
-    console.log({
-      start: pageable.pageSize * pageable.pageNumber,
-      end: pageable.pageSize * (pageable.pageNumber + 1),
-    });
-
     const paginatedMeals = mealsFromUser.slice(
       pageable.pageSize * pageable.pageNumber,
       pageable.pageSize * (pageable.pageNumber + 1),
     );
-
-    console.log('> paginatedMeals', paginatedMeals.length);
 
     return Page.create({
       content: paginatedMeals,
