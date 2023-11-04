@@ -98,5 +98,8 @@
       "^@core/(.*)$": "<rootDir>/main/app/core/$1",
       "^@/(.*)$": "<rootDir>/$1"
     }
+  },
+  "engines": {
+    "node": ">=16"
   }
 }
