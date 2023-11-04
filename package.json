@@ -20,6 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "PG_DB_HOST=\"localhost\" jest --config ./test/jest-e2e.json",
     "prisma:migrate:dev": "PG_DB_HOST=\"localhost\" npx prisma migrate dev",
+    "prisma:migrate:deploy": "npx prisma migrate deploy",
     "seed": "PG_DB_HOST=\"localhost\" ts-node -r tsconfig-paths/register prisma/seed.ts"
   },
   "dependencies": {
