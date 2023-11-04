@@ -6,8 +6,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
 import { ApplicationUserDTO } from '../users/dtos/application-user.dto';
 import { UserMapper } from '../users/mappers/user.mapper';
@@ -20,17 +18,15 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { TokenResponseMapper } from './mappers/token-response.mapper';
 import { AuthUser } from './models/auth-user.model';
 
-@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   /**
    * Cria um novo usuário
    */
   @Public()
   @Post('/register')
-  @ApiResponseDTO(ApplicationUserDTO)
   async register(
     @Body() register: RegisterRequestDTO,
   ): Promise<ResponseDTO<ApplicationUserDTO>> {
@@ -46,7 +42,6 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  @ApiResponseDTO(TokenResponseDTO)
   @HttpCode(HttpStatus.OK)
   async login(
     @CurrentUser() currentUser: AuthUser,

@@ -11,8 +11,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
-import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { ResponseDTO } from '@v1/common/dtos/response.dto';
 import { File } from '@v1/common/value-objects/file';
 import { Response } from 'express';
@@ -20,15 +18,13 @@ import { ImageSourceDTO } from './dtos/image-source.dto';
 import { FileUploaderService } from './file-uploader.service';
 import { ImageSourceMapper } from './mappers/image-source.mapper';
 
-@ApiTags('file-uploader')
 @Controller('file-uploader')
 export class FileUploaderController {
-  constructor(private readonly fileUploaderService: FileUploaderService) {}
+  constructor(private readonly fileUploaderService: FileUploaderService) { }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseDTO(ImageSourceDTO)
   async uploadFile(
     @UploadedFile(
       new ParseFilePipeBuilder()

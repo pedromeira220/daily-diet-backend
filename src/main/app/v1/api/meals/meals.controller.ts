@@ -12,8 +12,6 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ApiResponseDTO } from '@v1/common/decorators/api-response.decorator';
 import { PageableQueryParam } from '@v1/common/decorators/pageable.decorator';
 import { NumberDTO } from '@v1/common/dtos/number.dto';
 import { PageDTO } from '@v1/common/dtos/page.dto';
@@ -30,15 +28,13 @@ import { MealMapper } from './mappers/meal.mapper';
 import { MealsService } from './meals.service';
 
 @Controller('meals')
-@ApiTags('meals')
 export class MealsController {
-  constructor(private readonly mealsService: MealsService) {}
+  constructor(private readonly mealsService: MealsService) { }
 
   /*
    * Cria uma nova refeição
    */
   @Post()
-  @ApiResponseDTO(MealDTO)
   async create(
     @Body() createMealDTO: CreateMealDTO,
     @CurrentUser() currentUser: AuthUser,
@@ -55,7 +51,6 @@ export class MealsController {
   }
 
   @Get(':id')
-  @ApiResponseDTO(MealDTO)
   async getById(
     @Param('id', new ParseUUIDPipe()) id: string,
     @CurrentUser() currentUser: AuthUser,
@@ -75,7 +70,6 @@ export class MealsController {
   }
 
   @Put(':id')
-  @ApiResponseDTO(MealDTO)
   async updateById(
     @Param('id', new ParseUUIDPipe()) id: string,
     @CurrentUser() currentUser: AuthUser,
@@ -92,9 +86,7 @@ export class MealsController {
 
     return MealMapper.toHttp(updatedMealFromService);
   }
-  @ApiQuery({ type: Boolean, required: false })
   @Get('/metrics/meals-count')
-  @ApiResponseDTO(NumberDTO)
   async getMealsCountByUserMetric(
     @CurrentUser() currentUser: AuthUser,
     @Query('isOnDiet', new ParseBoolPipe({ optional: true }))
@@ -124,7 +116,6 @@ export class MealsController {
   }
 
   @Get('/metrics/best-sequence')
-  @ApiResponseDTO(NumberDTO)
   async getMealsBestSequence(
     @CurrentUser() currentUser: AuthUser,
   ): Promise<ResponseDTO<NumberDTO>> {
