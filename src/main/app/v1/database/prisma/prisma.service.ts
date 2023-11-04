@@ -4,6 +4,8 @@ import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor() {
+    console.log('> database url env', process.env.DATABASE_URL);
+
     super({
       log: process.env.NODE_ENV != 'test' ? ['query'] : [],
     });
