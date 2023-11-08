@@ -68,4 +68,9 @@ export class UsersController {
 
     return ProfileMapper.toHttp(profile);
   }
+
+  @Get('/hello/world')
+  async getHelloWorld() {
+    return 'Hello world';
+  }
 }
